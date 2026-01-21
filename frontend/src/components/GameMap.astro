@@ -1,0 +1,555 @@
+---
+---
+
+<div id="game-world" class="game-container">
+    <div class="map-wrapper">
+        <img src="/mapa.png" alt="Game Map" class="map-image" />
+        
+        <!-- zonas hitbox -->
+        <div class="zone hitbox hub" data-zone="hub" data-label="HUB CENTRAL" style="left: 45.3%; top: 37%; width: 11%; height: 20.5%;"></div>
+        <div class="zone hitbox backend" data-zone="backend" data-label="BACKEND" style="left: 25%; top: 6%; width: 9.5%; height: 19.5%;"></div>
+        <div class="zone hitbox ds" data-zone="datascience" data-label="DATA SCIENCE" style="left: 22%; top: 55%; width: 11%; height: 26%;"></div>
+        <div class="zone hitbox ai" data-zone="ai" data-label="INTELIGENCIA ARTIFICIAL" style="left: 67.1%; top: 6%; width: 12.5%; height: 23.8%;"></div>
+        <div class="zone hitbox exp" data-zone="experience" data-label="EXPERIENCIA" style="left: 73.8%; top: 46.5%; width: 6.3%; height: 17%;"></div>
+        
+        <!-- minijuegos -->
+        <div class="zone hitbox minigame" data-type="minigame" data-zone="Jardín" style="left: 43%; top: 75%; width: 8.5%; height: 16.5%;"></div>
+        <div class="zone hitbox minigame" data-type="minigame" data-zone="Granja" style="left: 46.5%; top: 10%; width: 10.5%; height: 18.5%;"></div>
+        <div class="zone hitbox minigame" data-type="minigame" data-zone="Lago" style="left: 62%; top: 75%; width: 7%; height: 15%;"></div>
+        <div class="zone hitbox minigame" data-type="minigame" data-zone="Árbol Mágico" style="left: 21.5%; top: 30%; width: 8.5%; height: 20%;"></div>
+        
+        <!-- easter eggs -->
+        <div class="zone hitbox easter_egg" data-type="easter_egg" data-zone="easter_egg" style="left: 94%; top: 94%; width: 3.8%; height: 7%;"></div>
+
+        <!-- obstaculos estaticos -->
+        <div class="obstacle" style="left: 85%; top: -20%; width: 1%; height: 140%;"></div>
+        <div class="obstacle" style="left: 16%; top: -20%; width: 1%; height: 140%;"></div>
+        <div class="obstacle" style="left: 37.5%; top: 30.5%; width: 7.6%; height: 6%;"></div>
+
+        <!-- letreros de zona -->
+        <div class="zone-signpost" style="left: 50.8%; top: 37%;">
+            <span class="sign-text">HUB CENTRAL</span>
+            <div class="sign-tip"></div>
+        </div>
+        <div class="zone-signpost" style="left: 29.5%; top: 6%;">
+            <span class="sign-text">BACKEND</span>
+            <div class="sign-tip"></div>
+        </div>
+        <div class="zone-signpost" style="left: 27.5%; top: 55%;">
+            <span class="sign-text">DATA SCIENCE</span>
+            <div class="sign-tip"></div>
+        </div>
+        <div class="zone-signpost" style="left: 73.1%; top: 6%;">
+            <span class="sign-text">INTELIGENCIA ARTIFICIAL</span>
+            <div class="sign-tip"></div>
+        </div>
+        <div class="zone-signpost" style="left: 77%; top: 46.5%;">
+            <span class="sign-text">EXPERIENCIA</span>
+            <div class="sign-tip"></div>
+        </div>
+
+
+        <div class="zone-signpost minigame" style="left: 47.3%; top: 75%;">
+            <span class="sign-text">MINIJUEGO - JARDÍN</span>
+            <div class="sign-tip"></div>
+        </div>
+        <div class="zone-signpost minigame" style="left: 51.7%; top: 10%;">
+            <span class="sign-text">MINIJUEGO - GRANJA</span>
+            <div class="sign-tip"></div>
+        </div>
+        <div class="zone-signpost minigame" style="left: 65.5%; top: 75%;">
+            <span class="sign-text">MINIJUEGO - LAGO</span>
+            <div class="sign-tip"></div>
+        </div>
+        <div class="zone-signpost minigame" style="left: 25.8%; top: 30%;">
+            <span class="sign-text">MINIJUEGO - ÁRBOL MÁGICO</span>
+            <div class="sign-tip"></div>
+        </div>
+
+        <!-- personaje jugador -->
+        <div id="player" class="player-container">
+            <div id="player-aura" class="player-aura"></div>
+            <div class="player-arrow">
+                <span class="arrow-text">TÚ</span>
+                <div class="arrow-tip"></div>
+            </div>
+            <div id="player-sprite" class="character-sprite"></div>
+        </div>
+
+        <!-- notificacion toast -->
+        <div id="game-toast" class="toast hidden"></div>
+
+        <!-- monedas -->
+        <div class="coin" style="top: 25%; left: 45%;"></div>
+        <div class="coin" style="top: 55%; left: 15%;"></div>
+        <div class="coin" style="top: 75%; left: 35%;"></div>
+        <div class="coin" style="top: 85%; left: 55%;"></div>
+        <div class="coin" style="top: 35%; left: 25%;"></div>
+        <div class="coin" style="top: 15%; left: 75%;"></div>
+        <div class="coin" style="top: 45%; left: 65%;"></div>
+        <div class="coin" style="top: 10%; left: 50%;"></div>
+        <div class="coin" style="top: 90%; left: 10%;"></div>
+    </div>
+
+    <!-- cursor seguidor -->
+    <div id="cursor-follower" class="golden-square"></div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080/api';
+    const player = document.getElementById('player');
+    const playerAura = document.getElementById('player-aura');
+    const cursor = document.getElementById('cursor-follower');
+    const toast = document.getElementById('game-toast');
+    const labelsContainer = document.getElementById('labels-container');
+
+    // estado del juego
+    let playerPixels = { x: window.innerWidth / 2, y: window.innerHeight * 0.6 };
+    let currentSkin = 0;
+    let keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+    let facingScale = 1;
+    let activeZone: string | null = null;
+    
+    // config movimiento
+    const stepSize = 15;
+    const moveCooldown = 120;
+    let lastStepTime = 0;
+
+    // obstaculos
+    function getObstacles() {
+        return Array.from(document.querySelectorAll('.obstacle')).map(el => {
+            const z = el as HTMLElement;
+            return {
+                left: parseFloat(z.style.left),
+                top: parseFloat(z.style.top),
+                width: parseFloat(z.style.width),
+                height: parseFloat(z.style.height)
+            };
+        });
+    }
+
+    function showToast(msg: string) {
+        if (!toast) return;
+        toast.innerText = msg;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 2000);
+    }
+
+    // inicializar etiquetas
+    function createLabels() {
+        if (!labelsContainer) return;
+        labelsContainer.innerHTML = '';
+        document.querySelectorAll('.zone').forEach(zone => {
+            const z = zone as HTMLElement;
+            const label = document.createElement('div');
+            label.className = 'zone-label';
+            const name = z.getAttribute('data-label') || z.getAttribute('data-zone');
+            const isMinigame = z.hasAttribute('data-type');
+            
+            label.innerHTML = `
+                <span class="label-text">${isMinigame ? 'MINIJUEGO - ' : ''}${name?.toUpperCase()}</span>
+                <div class="label-arrow"></div>
+            `;
+            label.style.left = z.style.left;
+            label.style.top = z.style.top;
+            
+            const width = parseFloat(z.style.width);
+            label.style.marginLeft = `${width / 2}%`;
+            
+            labelsContainer.appendChild(label);
+            (z as any)._label = label;
+        });
+    }
+
+    async function fetchUserState() {
+        try {
+            const res = await fetch(`${API_URL}/user`);
+            if (res.ok) {
+                const data = await res.json();
+                currentSkin = data.current_skin;
+                updatePlayerSkin();
+            }
+        } catch (e) { updatePlayerSkin(); }
+    }
+
+    const playerSprite = document.getElementById('player-sprite');
+
+    function updatePlayerSkin() {
+        if (playerSprite) {
+            const col = currentSkin % 5;
+            const row = Math.floor(currentSkin / 5);
+            const xPos = col * 25;
+            const yPos = row * 100;
+            playerSprite.style.backgroundPosition = `${xPos}% ${yPos}%`;
+        }
+    }
+
+    function isColliding(x: number, y: number) {
+        const px = (x / window.innerWidth) * 100;
+        const py = (y / window.innerHeight) * 100;
+        const currentObstacles = getObstacles();
+
+        for (const obs of currentObstacles) {
+            if (px > obs.left && px < obs.left + obs.width && py > obs.top && py < obs.top + obs.height) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function checkInteractions() {
+        const px = (playerPixels.x / window.innerWidth) * 100;
+        const py = (playerPixels.y / window.innerHeight) * 100;
+
+        // colision monedas
+        document.querySelectorAll('.coin:not(.collected)').forEach(coin => {
+            const c = coin as HTMLElement;
+            const cL = parseFloat(c.style.left);
+            const cT = parseFloat(c.style.top);
+            
+            const dx = Math.abs(px - cL);
+            const dy = Math.abs(py - cT);
+
+            if (dx < 1.8 && dy < 1.8) { // Reduced from 3 to 1.8 for precision
+                c.click();
+            }
+        });
+
+        // colision zonas
+        let foundZone = false;
+        document.querySelectorAll('.zone').forEach(zone => {
+            const z = zone as HTMLElement;
+            const left = parseFloat(z.style.left);
+            const top = parseFloat(z.style.top);
+            const width = parseFloat(z.style.width);
+            const height = parseFloat(z.style.height);
+
+            const label = (z as any)._label;
+            
+            if (px > left && px < left + width && py > top && py < top + height) {
+                label?.classList.add('near');
+                foundZone = true;
+                const zoneId = z.getAttribute('data-zone');
+                if (activeZone !== zoneId) {
+                    activeZone = zoneId;
+                    z.click();
+                }
+            } else {
+                label?.classList.remove('near');
+            }
+        });
+        if (!foundZone) activeZone = null;
+    }
+
+    function gameLoop(currentTime: number) {
+        if (currentTime - lastStepTime > moveCooldown) {
+            let nextX = playerPixels.x;
+            let nextY = playerPixels.y;
+            let moved = false;
+            
+            if (keys.ArrowUp) { nextY -= stepSize; moved = true; }
+            else if (keys.ArrowDown) { nextY += stepSize; moved = true; }
+            else if (keys.ArrowLeft) { 
+                nextX -= stepSize; 
+                moved = true; 
+                facingScale = -1; 
+            }
+            else if (keys.ArrowRight) { 
+                nextX += stepSize; 
+                moved = true; 
+                facingScale = 1; 
+            }
+
+            if (moved && !isColliding(nextX, nextY)) {
+                playerPixels.x = Math.max(0, Math.min(window.innerWidth, nextX));
+                playerPixels.y = Math.max(0, Math.min(window.innerHeight, nextY));
+                
+                if (player && playerSprite) {
+                    player.style.left = `${playerPixels.x}px`;
+                    player.style.top = `${playerPixels.y}px`;
+                    playerSprite.style.transform = `scaleX(${facingScale})`;
+                }
+                checkInteractions();
+                lastStepTime = currentTime;
+            }
+        }
+        requestAnimationFrame(gameLoop);
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (keys.hasOwnProperty(e.code)) keys[e.code] = true;
+    });
+    window.addEventListener('keyup', (e) => {
+        if (keys.hasOwnProperty(e.code)) keys[e.code] = false;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (cursor) {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        }
+    });
+
+    document.querySelectorAll('.coin').forEach(coin => {
+        coin.addEventListener('click', async (e) => {
+            const btn = e.target as HTMLElement;
+            if (btn.classList.contains('collected')) return;
+            
+            btn.classList.add('collected');
+            btn.style.pointerEvents = 'none';
+            
+            showToast("¡Has conseguido monedas!");
+            await fetch(`${API_URL}/collect`, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: 10 })
+            }).catch(() => {});
+            
+            document.dispatchEvent(new Event('coin-collected'));
+            setTimeout(() => btn.remove(), 400);
+        });
+    });
+
+    document.querySelectorAll('.zone').forEach(zone => {
+        zone.addEventListener('click', (e) => {
+            const z = e.target as HTMLElement;
+            let zoneName = z.getAttribute('data-zone');
+            const type = z.getAttribute('data-type');
+            
+            // Map display names to internal IDs for minigames
+            if (zoneName === 'Lago') zoneName = 'lake';
+            if (zoneName === 'Granja') zoneName = 'farm';
+            if (zoneName === 'Árbol Mágico') zoneName = 'magic_tree';
+            if (zoneName === 'Jardín') zoneName = 'garden';
+
+            document.dispatchEvent(new CustomEvent('open-zone', { detail: { zone: zoneName } }));
+        });
+    });
+
+    document.addEventListener('game-start', () => {
+        if (player) {
+            player.style.left = `${playerPixels.x}px`;
+            player.style.top = `${playerPixels.y}px`;
+        }
+        createLabels();
+        fetchUserState();
+        requestAnimationFrame(gameLoop);
+        fetch(`${API_URL}/visit`, { method: 'POST' }).catch(() => {});
+    });
+    
+    document.addEventListener('skin-changed', () => fetchUserState());
+</script>
+
+<style>
+    .game-container {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background-color: #000;
+        cursor: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .map-wrapper {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .map-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        image-rendering: pixelated;
+    }
+
+    .player-container {
+        position: absolute;
+        width: 36px; 
+        height: 55px;
+        z-index: 100;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+    }
+
+    .character-sprite {
+        width: 100%;
+        height: 100%;
+        background-image: url('/characters.png');
+        background-size: 500% 200%;
+        background-repeat: no-repeat;
+        image-rendering: pixelated;
+        transition: transform 0.1s;
+        position: relative;
+        z-index: 10;
+    }
+
+    .player-aura {
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 48px;
+        border: 2px solid #00f2ff;
+        /* brillo cian fuerte */
+        box-shadow: 0 0 10px #00f2ff, inset 0 0 8px rgba(0, 242, 255, 0.6);
+        z-index: 5;
+        pointer-events: none;
+        animation: auraPulse 0.5s steps(3) infinite alternate;
+        image-rendering: pixelated;
+    }
+
+    .player-aura.hidden {
+        display: none;
+    }
+
+    @keyframes auraPulse {
+        from { 
+            opacity: 0.7; 
+            transform: translateX(-50%) scale(0.98);
+            border-color: #00f2ff;
+        }
+        to { 
+            opacity: 1; 
+            transform: translateX(-50%) scale(1.05);
+            border-color: #ffffff;
+            box-shadow: 0 0 18px #00f2ff, inset 0 0 12px #00f2ff;
+        }
+    }
+
+    /* flecha jugador y letreros */
+    .player-arrow, .zone-signpost {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        animation: signpostFloat 2.5s infinite ease-in-out;
+        transition: transform 0.1s, opacity 0.3s;
+        pointer-events: none;
+    }
+
+    .player-arrow {
+        top: -45px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 110;
+    }
+
+    .zone-signpost {
+        transform: translate(-50%, -100%);
+        z-index: 80;
+        opacity: 0.9;
+    }
+
+    .arrow-text, .sign-text {
+        background: #fff;
+        color: #000;
+        padding: 4px 10px;
+        font-size: 0.55rem;
+        border: 2px solid #000;
+        white-space: nowrap;
+        box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+    }
+
+    .arrow-tip, .sign-tip {
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid #000;
+    }
+
+    /* animacion */
+    @keyframes signpostFloat {
+        0%, 100% { margin-top: 0; }
+        50% { margin-top: -8px; }
+    }
+
+    /* monedas pequeñas */
+    .coin {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: #ffd43b;
+        box-shadow: 
+            0 2px 0 #b38f00, 
+            2px 0 0 #b38f00, 
+            -2px 0 0 #b38f00, 
+            0 -2px 0 #b38f00,
+            inset -2px -2px 0 #f0c000;
+        cursor: none;
+        animation: coinFloat 2s infinite ease-in-out;
+        z-index: 50;
+    }
+
+    @keyframes coinFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    .coin.collected {
+        animation: collectAnim 0.4s forwards;
+    }
+
+    @keyframes collectAnim {
+        to { transform: translateY(-50px) scale(0); opacity: 0; }
+    }
+
+    /* toasts */
+    .toast {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        color: #000;
+        padding: 12px 24px;
+        border: 3px solid #000;
+        font-size: 0.7rem;
+        z-index: 1000;
+        box-shadow: 6px 6px 0 rgba(0,0,0,0.6);
+        animation: toastFloat 3s infinite ease-in-out;
+    }
+
+    @keyframes toastFloat {
+        0%, 100% { transform: translate(-50%, 0); }
+        50% { transform: translate(-50%, -10px); }
+    }
+
+    .toast.hidden { display: none; }
+
+    .golden-square {
+        position: fixed;
+        width: 24px;
+        height: 24px;
+        background: transparent;
+        border: 3px solid #ffd43b;
+        box-shadow: 0 0 15px #ffd43b;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%) rotate(45deg);
+        animation: spin 3s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .zone {
+        position: absolute;
+        cursor: none;
+        z-index: 10;
+        transition: background 0.2s;
+    }
+    
+    .zone:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+    }
+

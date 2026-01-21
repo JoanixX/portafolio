@@ -1,0 +1,51 @@
+# os
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ides
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# backend rust
+/backend/target/
+/backend/*.rs.bk
+/backend/Cargo.lock.backup
+
+# frontend node astro
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.astro/
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/.pnpm-debug.log*
+
+# variables de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# builds
+build/
+bin/
+obj/
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# extras
+.cache/
+.parcel-cache/
+.turbo/

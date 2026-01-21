@@ -1,0 +1,299 @@
+<div id="zone-modal" class="modal-backdrop hidden">
+    <div class="modal-container">
+        <!-- panel principal -->
+        <div class="modal-content glass-panel">
+            <button id="close-modal" class="close-btn">&times;</button>
+            <h2 id="modal-title">ZONE TITLE</h2>
+            
+            <div id="modal-body" class="description-text">
+                <!-- descripcion -->
+            </div>
+
+            <div id="projects-list" class="projects-list">
+                <!-- lista de proyectos -->
+            </div>
+
+            <div id="modal-actions" class="modal-actions">
+                <button id="claim-reward" class="btn reward hidden">Reclamar Recompensa (+50 coins)</button>
+            </div>
+        </div>
+
+        <!-- detalles extra -->
+        <div id="project-details" class="details-panel glass-panel hidden">
+            <button id="close-details" class="close-details-btn">&times;</button>
+            <div id="detail-content">
+                <div class="image-preview-placeholder">
+                    <img id="detail-img" src="" alt="Project Preview" />
+                </div>
+                <h3 id="detail-name">Project Name</h3>
+                <p id="detail-desc">Full project description...</p>
+                <div class="tech-stack">
+                    <span class="tech-label">TECNOLOGÍAS:</span>
+                    <p id="detail-tech">Rust, Actix, PostgreSQL</p>
+                </div>
+                <div class="detail-actions">
+                    <a href="#" id="detail-repo" class="btn secondary">GitHub Repo</a>
+                    <button id="detail-claim" class="btn reward">Reward (+25 coins)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- imagen flotante -->
+        <div id="hover-preview" class="hover-preview hidden">
+            <img id="hover-img" src="" alt="Preview" />
+        </div>
+
+        <!-- minijuegos -->
+        <div id="minigame-container" class="minigame-panel hidden">
+            <div id="fish-game-area" class="game-area-box">
+                <!-- canvas del juego -->
+                <div class="game-controls">
+                    <div id="game-status" class="status-msg">Presiona JUGAR para comenzar</div>
+                    <div id="game-score" class="score-display"></div>
+                    <button id="play-game-btn" class="btn reward">JUGAR (75 Coins)</button>
+                </div>
+            </div>
+            <div id="minigame-placeholder-msg" class="placeholder-text hidden"></div>
+            
+            <div id="minigame-footer" class="minigame-footer">
+                <div id="minigame-cost" class="minigame-cost"></div>
+                <div id="minigame-extra-info" class="minigame-extra"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    import { contentMap, type Project, type ZoneContent } from '../data/zones';
+    import { FishingGame } from '../game/fishing';
+    import '../styles/modal.css';
+
+    const API_URL = 'http://localhost:8080/api';
+    const modal = document.getElementById('zone-modal');
+    const closeBtn = document.getElementById('close-modal');
+    const titleEl = document.getElementById('modal-title');
+    const bodyEl = document.getElementById('modal-body');
+    const projectsList = document.getElementById('projects-list');
+    const actionContainer = document.getElementById('modal-actions');
+    const rewardBtn = document.getElementById('claim-reward');
+
+    const detailsPanel = document.getElementById('project-details');
+    const detailImg = document.getElementById('detail-img') as HTMLImageElement;
+    const detailName = document.getElementById('detail-name');
+    const detailDesc = document.getElementById('detail-desc');
+    const detailTech = document.getElementById('detail-tech');
+    const detailRepo = document.getElementById('detail-repo') as HTMLAnchorElement;
+    const detailClaim = document.getElementById('detail-claim');
+    const closeDetails = document.getElementById('close-details');
+
+    const hoverPreview = document.getElementById('hover-preview');
+    const hoverImg = document.getElementById('hover-img') as HTMLImageElement;
+
+    const minigameContainer = document.getElementById('minigame-container');
+    const fishGameArea = document.getElementById('fish-game-area');
+    const gameStatus = document.getElementById('game-status');
+    const gameScore = document.getElementById('game-score');
+    const minigameCost = document.getElementById('minigame-cost');
+    const minigameExtra = document.getElementById('minigame-extra-info');
+
+    let claimedRewardIds = new Set<string>();
+    let userSkin = 0;
+    let activeFunctionsGame: FishingGame | null = null; // instancia
+
+    async function fetchUserData() {
+        try {
+            const res = await fetch(`${API_URL}/user`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.claimed_rewards && Array.isArray(data.claimed_rewards)) {
+                    claimedRewardIds = new Set(data.claimed_rewards);
+                }
+                userSkin = data.current_skin || 0;
+            }
+        } catch (e) { console.error(e); }
+    }
+    fetchUserData();
+
+    // abrir zona
+    document.addEventListener('open-zone', (e: any) => {
+        const zoneId = e.detail.zone;
+        const data = contentMap[zoneId];
+        
+        if (activeFunctionsGame) {
+            activeFunctionsGame.cleanup();
+            activeFunctionsGame = null;
+        }
+
+        fetchUserData().then(() => {
+            if (data && modal && titleEl && bodyEl && projectsList) {
+                titleEl.innerText = data.title;
+                bodyEl.innerHTML = data.body;
+                
+                // reiniciar vistas
+                projectsList.innerHTML = '';
+                detailsPanel?.classList.add('hidden');
+                minigameContainer?.classList.add('hidden');
+                actionContainer?.classList.add('hidden');
+                projectsList?.classList.remove('hidden');
+
+                if (data.type === 'minigame') {
+                    projectsList?.classList.add('hidden');
+                    minigameContainer?.classList.remove('hidden');
+                    setupMinigame(data);
+                } else {
+                    if (data.projects) {
+                        data.projects.forEach(p => {
+                            const el = document.createElement('div');
+                            el.className = 'project-row';
+                            el.innerHTML = `<span class="p-name">${p.name}</span><span class="p-sum">${p.summary}</span>`;
+                            el.addEventListener('mousedown', () => {
+                                hoverImg.src = p.image;
+                                hoverPreview?.classList.remove('hidden');
+                            });
+                            const hideH = () => hoverPreview?.classList.add('hidden');
+                            el.addEventListener('mouseup', hideH);
+                            el.addEventListener('mouseleave', hideH);
+                            el.addEventListener('click', () => {
+                                showDetails(p);
+                            });
+                            projectsList.appendChild(el);
+                        });
+                    }
+
+                    if (data.type === 'reward') {
+                        actionContainer?.classList.remove('hidden');
+                        rewardBtn?.classList.remove('hidden');
+                        
+                        if (claimedRewardIds.has(zoneId)) {
+                            rewardBtn!.innerText = 'COBRADO ✓';
+                            rewardBtn!.classList.add('claimed');
+                            (rewardBtn as any).disabled = true;
+                            rewardBtn!.onclick = null;
+                        } else {
+                            rewardBtn!.innerText = 'Reclamar Recompensa (+50 coins)';
+                            rewardBtn!.classList.remove('claimed');
+                            (rewardBtn as any).disabled = false;
+                            rewardBtn!.onclick = () => doClaim(zoneId, 50, rewardBtn);
+                        }
+                    } else {
+                        actionContainer?.classList.add('hidden');
+                        rewardBtn?.classList.add('hidden');
+                    }
+                }
+                
+                modal.classList.remove('hidden');
+            }
+        });
+    });
+
+
+    function setupMinigame(data: ZoneContent) {
+        if (!minigameContainer || !fishGameArea || !minigameCost || !minigameExtra) return;
+        
+        const gameType = data.game || 'placeholder';
+        
+        // reiniciar area
+        fishGameArea.innerHTML = '';
+        fishGameArea.className = 'game-area-box ' + gameType;
+
+        // info del footer
+        const footer = document.getElementById('minigame-footer');
+        if (footer) {
+            if (data.minigameCost || data.minigameInfo) {
+                footer.classList.remove('hidden');
+                minigameCost.innerText = data.minigameCost || '';
+                minigameExtra.innerText = data.minigameInfo || '';
+            } else {
+                footer.classList.add('hidden');
+            }
+        }
+        
+        // fondo
+        if (data.bgImage) {
+            fishGameArea.style.backgroundImage = `url('${data.bgImage}')`;
+            fishGameArea.style.backgroundSize = 'contain';
+            fishGameArea.style.backgroundPosition = 'center';
+            fishGameArea.style.backgroundRepeat = 'no-repeat';
+            fishGameArea.style.backgroundColor = 'transparent';
+        } else {
+            fishGameArea.style.backgroundImage = '';
+            fishGameArea.style.backgroundColor = '#111';
+        }
+
+        activeFunctionsGame = null;
+
+        if (gameType === 'fishing') {
+            activeFunctionsGame = new FishingGame(API_URL, fishGameArea);
+            activeFunctionsGame.setSkin(userSkin);
+            activeFunctionsGame.init();
+        } else {
+            // hud placeholders
+            fishGameArea.innerHTML = `
+                <div class="game-controls">
+                    <div id="game-status" class="status-msg">PRÓXIMAMENTE</div>
+                    <div id="game-score" class="score-display"></div>
+                    <button class="btn reward" disabled>EN CONSTRUCCIÓN</button>
+                </div>
+            `;
+        }
+    }
+
+    function showDetails(p: Project) {
+        if (!detailsPanel || !detailImg || !detailName || !detailDesc || !detailTech || !detailRepo || !detailClaim) return;
+        detailImg.src = p.image;
+        detailName.innerText = p.name;
+        detailDesc.innerText = p.description;
+        detailTech.innerText = p.tech;
+        detailRepo.href = p.github;
+        
+        detailsPanel.classList.remove('hidden');
+
+        if (claimedRewardIds.has(p.id)) {
+            detailClaim.innerText = 'COBRADO ✓';
+            detailClaim.classList.add('claimed');
+            (detailClaim as any).disabled = true;
+            detailClaim.onclick = null;
+        } else {
+            detailClaim.innerText = 'Reward (+25 coins)';
+            detailClaim.classList.remove('claimed');
+            (detailClaim as any).disabled = false;
+            detailClaim.onclick = () => doClaim(p.id, 25, detailClaim as HTMLElement);
+        }
+    }
+
+    async function doClaim(id: string, amount: number, el: HTMLElement) {
+        try {
+            const res = await fetch(`${API_URL}/collect`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount, reward_id: id })
+            });
+            if (res.ok) {
+                document.dispatchEvent(new Event('coin-collected'));
+                el.innerText = 'COBRADO ✓';
+                el.classList.add('claimed');
+                (el as any).disabled = true;
+                
+                claimedRewardIds.add(id);
+                fetchUserData();
+            } else { 
+                const err = await res.json();
+                if (err.error === "Reward already claimed") {
+                    claimedRewardIds.add(id);
+                    el.innerText = 'COBRADO ✓';
+                    el.classList.add('claimed');
+                    (el as any).disabled = true;
+                } else {
+                    alert("Error: " + err.error);
+                }
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    closeBtn?.addEventListener('click', () => {
+        if (activeFunctionsGame) activeFunctionsGame.cleanup();
+        modal?.classList.add('hidden');
+    });
+    closeDetails?.addEventListener('click', () => detailsPanel?.classList.add('hidden'));
+</script>

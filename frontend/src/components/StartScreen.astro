@@ -1,0 +1,274 @@
+---
+---
+
+<div id="start-screen" class="start-screen">
+    <div class="main-wrapper">
+        <!-- area interactiva izq -->
+        <div class="left-panel">
+            <div class="brand">
+                <h1>MI PORTAFOLIO</h1>
+                <p class="subtitle">Full Stack & AI Engineer</p>
+            </div>
+            <button id="btn-start" class="btn-pixel">PRESS START</button>
+        </div>
+
+        <!-- separador cadenas -->
+        <div class="separator-chains">
+            <div class="chain"></div>
+            <div class="chain-badge">VS</div>
+            <div class="chain"></div>
+        </div>
+
+        <!-- area sobre mi -->
+        <div class="right-panel">
+            <div class="about-me glass-panel">
+                <h2>¿Quién soy?</h2>
+                <div class="about-content">
+                    <div class="about-top">
+                        <p>Soy Joaquin Alvarado, un desarrollador apasionado por crear 
+                        mundos digitales interactivos. Mi especialidad es el Backend 
+                        tanto en Rust como en Python (FastAPI), me enfoco en la arquitectura 
+                        limpia y la escalabilidad de mis aplicaciones, además de integrar 
+                        Inteligencia Artificial para desarrollar soluciones y mejorar la 
+                        experiencia del usuario.</p>
+                        <div class="about-image">
+                            <img src="/CV_Yo.png" alt="Joaquin Alvarado" class="profile-img" />
+                        </div>
+                    </div>
+                    <div class="extra-info">
+                        <div class="info-item">
+                            <span class="label">Misión</span>
+                            <span class="value">Arquitectura Limpia</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Visión</span>
+                            <span class="value">Innovación IA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('btn-start');
+    const screen = document.getElementById('start-screen');
+
+    btn?.addEventListener('click', () => {
+        screen?.classList.add('fade-out');
+        setTimeout(() => {
+            if (screen) screen.style.display = 'none';
+            document.dispatchEvent(new Event('game-start'));
+        }, 1000);
+    });
+</script>
+
+<style>
+    .start-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        transition: opacity 1s;
+    }
+
+    .main-wrapper {
+        display: flex;
+        width: 95%;
+        max-width: 1250px;
+        height: 75%; /* reducido ligeramente */
+        align-items: center;
+        gap: 40px;
+    }
+
+    .start-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* paneles */
+    .left-panel {
+        flex: 0.7; /* empujado a la izq */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .right-panel {
+        flex: 1.3; /* mas espacio para info */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .brand h1 {
+        font-size: 2.8rem;
+        color: #ffd43b;
+        text-shadow: 4px 4px 0 #8c4e00;
+        margin-bottom: 25px;
+        animation: float 3s ease-in-out infinite;
+        line-height: 1.1;
+    }
+
+    .subtitle {
+        color: #4dabf7;
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        margin-bottom: 40px;
+    }
+
+    /* cadenas separadoras */
+    .separator-chains {
+        width: 40px;
+        height: 70%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .chain {
+        flex: 1;
+        width: 6px;
+        background: repeating-linear-gradient(
+            #ffd43b 0, #ffd43b 10px,
+            #8c4e00 10px, #8c4e00 12px
+        );
+        border: 2px solid #fff;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(255, 212, 59, 0.3);
+    }
+
+    .chain-badge {
+        background: #fff;
+        color: #000;
+        padding: 10px;
+        border: 4px solid #ffd43b;
+        font-weight: bold;
+        transform: rotate(45deg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 35px;
+        height: 35px;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    /* contenido panel derecho */
+    .about-me {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        padding: 30px 40px;
+        border-radius: 20px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        width: 100%;
+        max-width: 780px; /* contenedor mas ancho */
+        margin: 0;
+    }
+
+    .about-me h2 {
+        color: #ffd43b;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        border-bottom: 2px solid rgba(255,212,59,0.3);
+        padding-bottom: 10px;
+        text-align: left;
+    }
+
+    .about-me p {
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: #e0e6ed;
+        margin: 0;
+        text-align: left;
+    }
+
+    .about-content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .about-top {
+        display: flex;
+        gap: 35px;
+        align-items: center; /* mejor centrado vertical */
+    }
+
+    .about-image {
+        width: 250px; /* foto grande */
+        flex-shrink: 0;
+    }
+
+    .profile-img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        border-radius: 12px;
+        border: 3px solid #ffd43b;
+        box-shadow: 0 0 25px rgba(255, 212, 59, 0.25);
+    }
+
+    .extra-info {
+        display: flex;
+        gap: 40px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .info-item .label {
+        color: #4dabf7;
+        font-size: 0.6rem;
+        text-transform: uppercase;
+    }
+
+    .info-item .value {
+        font-size: 0.75rem;
+        color: #fff;
+    }
+
+    /* boton */
+    .btn-pixel {
+        background: #ff6b6b;
+        border: 4px solid #fff;
+        padding: 15px 30px;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 1.2rem;
+        color: #fff;
+        cursor: pointer;
+        text-transform: uppercase;
+        box-shadow: 6px 6px 0 #8c0000;
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .btn-pixel:active {
+        transform: translate(4px, 4px);
+        box-shadow: 2px 2px 0 #8c0000;
+    }
+
+    .btn-pixel:hover { background: #ff8787; }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+</style>

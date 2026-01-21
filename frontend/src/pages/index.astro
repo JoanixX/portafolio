@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameMap from '../components/GameMap.astro';
+import Dashboard from '../components/Dashboard.astro';
+import ZoneModal from '../components/ZoneModal.astro';
+import StartScreen from '../components/StartScreen.astro';
+---
+
+<Layout title="Joaquin's Interactive Portfolio">
+	<main>
+		<StartScreen />
+		<Dashboard />
+		<GameMap />
+		<ZoneModal />
+	</main>
+</Layout>
+
+<style>
+	main {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+</style>
