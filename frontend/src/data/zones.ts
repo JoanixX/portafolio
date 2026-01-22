@@ -35,7 +35,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "API desarrollada en Rust diseñada para manejar alta concurrencia, con manejo eficiente de memoria, pooling de conexiones y pruebas de carga.",
         image: "https://via.placeholder.com/300x200/222/ffd43b?text=Rust+API",
-        tech: "Rust, Actix-Web, PostgreSQL, SQLx",
+        tech: "Rust, Actix-Web, PostgreSQL, SQLx, Docker, k6",
         github: "#",
       },
       {
@@ -45,7 +45,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Servicio de autenticación con JWT, refresh tokens, roles y protección contra ataques comunes (token replay, brute force).",
         image: "https://via.placeholder.com/300x200/222/ffd43b?text=Auth+Security",
-        tech: "Python, FastAPI, JWT, Redis",
+        tech: "Python, FastAPI, JWT, Redis, Argon2, Rate Limiting",
         github: "#",
       },
       {
@@ -55,7 +55,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Backend diseñado bajo principios de arquitectura limpia, separación de capas, servicios desacoplados y escalabilidad horizontal.",
         image: "https://via.placeholder.com/300x200/222/ffd43b?text=Architecture",
-        tech: "FastAPI, PostgreSQL, Docker",
+        tech: "FastAPI, PostgreSQL, Docker, Clean Architecture",
         github: "#",
       },
       {
@@ -65,7 +65,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Backend encargado de gestionar versiones de modelos de IA, cachear resultados, controlar costos y exponer endpoints consistentes.",
         image: "https://via.placeholder.com/300x200/222/ffd43b?text=AI+Orchestration",
-        tech: "Python, FastAPI, Redis, PostgreSQL",
+        tech: "Python, FastAPI, Redis, PostgreSQL, Background Workers",
         github: "#",
       },
     ],
@@ -84,7 +84,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Análisis de reseñas falsas mediante ingeniería de características, NLP y modelos supervisados, evaluados con métricas como F1 y ROC-AUC.",
         image: "https://via.placeholder.com/300x200/222/4dabf7?text=Fraud+Detection",
-        tech: "Python, LightGBM, TF-IDF, SHAP",
+        tech: "Python, LightGBM, TF-IDF, NLP, SHAP",
         github: "#",
       },
       {
@@ -94,7 +94,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Segmentación de usuarios usando K-Means y DBSCAN sobre datos ruidosos, combinando métricas técnicas con análisis estratégico para toma de decisiones.",
         image: "https://via.placeholder.com/300x200/222/4dabf7?text=Clustering",
-        tech: "Python, Scikit-learn, Pandas",
+        tech: "Python, Scikit-learn, Pandas, K-Means, DBSCAN, PCA",
         github: "#",
       },
       {
@@ -104,7 +104,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Modelo de forecasting con series temporales complementado con simulaciones para evaluar escenarios y apoyar decisiones operativas.",
         image: "https://via.placeholder.com/300x200/222/4dabf7?text=Forecasting",
-        tech: "Python, Statsmodels, Prophet",
+        tech: "Python, Statsmodels, Prophet, Time Series Analysis",
         github: "#",
       },
     ],
@@ -134,7 +134,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Modelo de scoring entrenado sobre datos estructurados con explicabilidad mediante SHAP para entender el impacto de cada variable.",
         image: "https://via.placeholder.com/300x200/222/ffd43b?text=Explainable+AI",
-        tech: "Python, XGBoost, SHAP",
+        tech: "Python, XGBoost, SHAP, Supervised Learning",
         github: "#",
       },
       {
@@ -144,7 +144,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Modelo de NLP para clasificación de textos utilizando embeddings y técnicas de vectorización evaluadas con métricas estándar.",
         image: "https://via.placeholder.com/300x200/222/ffd43b?text=NLP",
-        tech: "Python, Transformers, Scikit-learn",
+        tech: "Python, Transformers, Embeddings, Scikit-learn",
         github: "#",
       },
     ],
@@ -164,7 +164,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Plataforma full-stack que analiza perfiles y descripciones mediante NLP, genera rankings explicables y aprende del feedback de usuarios.",
         image: "https://via.placeholder.com/300x200/222/69db7c?text=Ranking+System",
-        tech: "FastAPI, NLP, PostgreSQL, Frontend Web",
+        tech: "FastAPI, NLP, Vector Embeddings, PostgreSQL, Frontend Web",
         github: "#",
       },
       {
@@ -174,7 +174,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Sistema que clasifica gastos automáticamente, detecta anomalías y predice comportamientos financieros futuros.",
         image: "https://via.placeholder.com/300x200/222/69db7c?text=Smart+Finance",
-        tech: "FastAPI, OCR, Time Series, Frontend Web",
+        tech: "FastAPI, OCR, Anomaly Detection, Time Series, Frontend Web",
         github: "#",
       },
       {
@@ -184,7 +184,7 @@ export const contentMap: Record<string, ZoneContent> = {
         description:
           "Sistema que procesa información entrante, la clasifica por prioridad y ejecuta acciones automatizadas basadas en reglas y modelos de IA.",
         image: "https://via.placeholder.com/300x200/222/69db7c?text=AI+Automation",
-        tech: "FastAPI, NLP, Background Workers, Frontend Dashboard",
+        tech: "FastAPI, NLP, Rules Engine, Background Workers, Frontend Dashboard",
         github: "#",
       },
     ],
