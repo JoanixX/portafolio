@@ -298,12 +298,20 @@
             btn.classList.add('collected');
             btn.style.pointerEvents = 'none';
             
-            showToast("¡Has conseguido monedas!");
-            await fetch(`${API_URL}/collect`, { 
+            const res = await fetch(`${API_URL}/collect`, { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ amount: 10 })
-            }).catch(() => {});
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                console.log(`[GameMap] Coin collection successful. Total global: ${data.total}, User now has: ${data.user}`);
+                showToast(`+10 Monedas! (Total: ${data.user})`);
+            } else {
+                console.error("[GameMap] Failed to collect coin:", await res.text());
+                showToast("Error al recoger moneda");
+            }
             
             document.dispatchEvent(new Event('coin-collected'));
             setTimeout(() => btn.remove(), 400);

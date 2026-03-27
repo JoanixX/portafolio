@@ -61,10 +61,12 @@
                 const shopCoinsEl = document.getElementById('shop-coins');
                 if (coinsEl) coinsEl.innerText = userCoins.toString();
                 if (shopCoinsEl) shopCoinsEl.innerText = userCoins.toString();
-                
+                console.log(`[Dashboard] Coins updated from backend: ${userCoins}`);
                 renderShop();
             }
-        } catch (e) { console.error("Backend error", e); }
+        } catch (e) { 
+            console.error("[Dashboard] Backend connection error:", e); 
+        }
     }
 
     function renderShop() {
@@ -157,7 +159,10 @@
 
     // loops
     setInterval(updateStats, 5000); // sincro
-    document.addEventListener('coin-collected', updateStats);
+    document.addEventListener('coin-collected', () => {
+        console.log("[Dashboard] 'coin-collected' event received");
+        updateStats();
+    });
     document.addEventListener('game-start', updateStats);
     updateStats();
 </script>
