@@ -162,7 +162,7 @@
     updateStats();
 </script>
 
-<style>
+<style define:vars={{ charactersPath: `url('${import.meta.env.BASE_URL}/characters.png')` }}>
     .dashboard {
         position: fixed;
         top: 20px;
@@ -264,7 +264,7 @@
     .skin-preview {
         width: 64px;
         height: 80px;
-        background-image: url('characters.png');
+        background-image: var(--charactersPath);
         background-size: 500% 200%;
         image-rendering: pixelated;
         border-radius: 4px;

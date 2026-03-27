@@ -304,7 +304,6 @@ h3 {
 .char-sprite {
   width: 64px;
   height: 80px;
-  background-image: url('characters.png');
   background-size: 500% 200%;
   image-rendering: pixelated;
   transform: scale(0.7);

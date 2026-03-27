@@ -64,6 +64,14 @@
     </div>
 </div>
 
+<style define:vars={{ charactersPath: `url('${import.meta.env.BASE_URL}/characters.png')` }}>
+    .char-sprite {
+        background-image: var(--charactersPath);
+        z-index: 10;
+        position: relative;
+    }
+</style>
+
 <script>
     import { contentMap, type Project, type ZoneContent } from '../data/zones';
     import { FishingGame } from '../game/fishing';
@@ -211,7 +219,8 @@
         
         // fondo
         if (data.bgImage) {
-            fishGameArea.style.backgroundImage = `url('${data.bgImage}')`;
+            const bgPath = data.bgImage.startsWith('http') ? data.bgImage : `${import.meta.env.BASE_URL}/${data.bgImage}`;
+            fishGameArea.style.backgroundImage = `url('${bgPath}')`;
             fishGameArea.style.backgroundSize = 'contain';
             fishGameArea.style.backgroundPosition = 'center';
             fishGameArea.style.backgroundRepeat = 'no-repeat';
