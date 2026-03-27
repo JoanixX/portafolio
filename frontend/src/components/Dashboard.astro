@@ -27,7 +27,7 @@
 </div>
 
 <script>
-    const API_URL = 'http://localhost:8080/api';
+    const API_URL = import.meta.env.DEV ? 'http://localhost:8080/api' : '/api';
     
     // estado
     let userCoins = 0;
@@ -264,7 +264,7 @@
     .skin-preview {
         width: 64px;
         height: 80px;
-        background-image: url('/characters.png');
+        background-image: url('characters.png');
         background-size: 500% 200%;
         image-rendering: pixelated;
         border-radius: 4px;

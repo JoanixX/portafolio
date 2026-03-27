@@ -228,7 +228,7 @@ solo unas monedas para comprarte un skin, que es, evidentemente, totalmente nece
   lake: {
     type: "minigame",
     game: "fishing",
-    bgImage: "/lake_minigame.png",
+    bgImage: "lake_minigame.png",
     title: "LAGO DE PESCA - LA SERENIDAD DEL CÓDIGO",
     body: `<p class="lore-text">Un lago dinámico donde los recursos (peces) fluyen constantemente. Debes sincronizar tu "hook" para capturar los datos valiosos sin chocar con basura (latas) que corrompen tu memoria.</p>
                <p><strong>Instrucciones:</strong> <br>
@@ -241,7 +241,7 @@ solo unas monedas para comprarte un skin, que es, evidentemente, totalmente nece
   farm: {
     type: "minigame",
     game: "placeholder",
-    bgImage: "/farm_minigame.png",
+    bgImage: "farm_minigame.png",
     title: "GRANJA DE POLLOS - CONTROL DE PROCESOS",
     body: `<p class="lore-text">Una granja caótica donde los pollos corren sin control, simulando transacciones desbordadas en un servidor. Tu misión es etiquetar (disparar huevos) a los procesos correctos (pollos) sin afectar a los servicios críticos (otros animales).</p>
                <p><strong>Instrucciones:</strong> Usa el mouse para apuntar y clic para disparar. Evita a las vacas y cerdos o perderás puntos de rendimiento.</p>`,
@@ -251,7 +251,7 @@ solo unas monedas para comprarte un skin, que es, evidentemente, totalmente nece
   magic_tree: {
     type: "minigame",
     game: "placeholder",
-    bgImage: "/magicTree_minigame.png",
+    bgImage: "magicTree_minigame.png",
     title: "ÁRBOL MÁGICO - ESTRUCTURAS DE DATOS",
     body: `<p class="lore-text">Bajo las ramas de este antiguo árbol binario, el sabio Linus Torvalds te retará a un duelo de lógica pura. No es solo suerte; es un algoritmo minimax en acción.</p>
                <p><strong>Instrucciones:</strong> El clásico 4 en Línea. Conecta 4 fichas antes que la IA. Si ganas, duplicas tu apuesta. Si pierdes, te vas con las manos vacías.</p>`,
@@ -261,7 +261,7 @@ solo unas monedas para comprarte un skin, que es, evidentemente, totalmente nece
   garden: {
     type: "minigame",
     game: "placeholder",
-    bgImage: "/garden_minigame.png",
+    bgImage: "garden_minigame.png",
     title: "JARDÍN DEL SABER - QUIZ TECH",
     body: `<p class="lore-text">Un jardín floreciente donde cada flor es una pregunta de conocimiento. Desde punteros en C++ hasta la historia de los mundiales de fútbol. Solo los verdaderos full-stack sobrevivirán.</p>
                <p><strong>Instrucciones:</strong> Responde 5 preguntas aleatorias. Cada acierto te da monedas, cada fallo te resta vida.</p>`,
