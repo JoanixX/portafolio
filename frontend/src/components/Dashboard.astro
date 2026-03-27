@@ -28,6 +28,16 @@
 
 <script>
     const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8080/api';
+    // identificación unica del usuario
+    const getUserId = () => {
+        let id = localStorage.getItem('portfolio_user_id');
+        if (!id) {
+            id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('portfolio_user_id', id);
+        }
+        return id;
+    };
+    const userId = getUserId();
     
     // estado
     let userCoins = 0;
@@ -41,8 +51,9 @@
 
     async function updateStats() {
         try {
+            const commonHeaders = { 'X-User-ID': userId };
             // obtener stats globales
-            const resStats = await fetch(`${API_URL}/stats`);
+            const resStats = await fetch(`${API_URL}/stats`, { headers: commonHeaders });
             if (resStats.ok) {
                 const data = await resStats.json();
                 const visitsEl = document.getElementById('stat-visits');
@@ -50,7 +61,7 @@
             }
 
             // obtener stats usuario
-            const resUser = await fetch(`${API_URL}/user`);
+            const resUser = await fetch(`${API_URL}/user`, { headers: commonHeaders });
             if (resUser.ok) {
                 const data = await resUser.json();
                 userCoins = data.coins;
@@ -61,7 +72,7 @@
                 const shopCoinsEl = document.getElementById('shop-coins');
                 if (coinsEl) coinsEl.innerText = userCoins.toString();
                 if (shopCoinsEl) shopCoinsEl.innerText = userCoins.toString();
-                console.log(`[Dashboard] Coins updated from backend: ${userCoins}`);
+                console.log(`[Dashboard] Coins updated for ${userId}: ${userCoins}`);
                 renderShop();
             }
         } catch (e) { 
@@ -122,7 +133,10 @@
         try {
             const res = await fetch(`${API_URL}/buy_skin`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-User-ID': userId
+                },
                 body: JSON.stringify({ skin_id: id })
             });
             if (res.ok) {
@@ -137,7 +151,10 @@
         try {
             const res = await fetch(`${API_URL}/set_skin`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-User-ID': userId
+                },
                 body: JSON.stringify({ skin_id: id })
             });
             if (res.ok) {

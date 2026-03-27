@@ -66,12 +66,25 @@ export class FishingGame {
         if (btn) btn.addEventListener('click', () => this.tryStartGame());
     }
 
+    private getUserId(): String {
+        let id = localStorage.getItem('portfolio_user_id');
+        if (!id) {
+            id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('portfolio_user_id', id);
+        }
+        return id;
+    }
+
     private async tryStartGame() {
+        const userId = this.getUserId();
         const statusEl = this.container.querySelector('#game-status') as HTMLElement;
         try {
             const res = await fetch(`${this.apiUrl}/play_game`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-User-ID': userId.toString()
+                },
                 body: JSON.stringify({ cost: 75 })
             });
 
@@ -378,9 +391,13 @@ export class FishingGame {
         if (this.score > 0) {
             finalStatus += ` Ganaste: ${this.score} monedas.`;
             try {
+                const userId = this.getUserId();
                 await fetch(`${this.apiUrl}/reward_coins`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-User-ID': userId.toString()
+                    },
                     body: JSON.stringify({ amount: this.score, reward_id: null }) 
                 });
                 document.dispatchEvent(new Event('coin-collected'));

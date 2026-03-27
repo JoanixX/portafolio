@@ -78,6 +78,16 @@
     import '../styles/modal.css';
 
     const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8080/api';
+    // identificación unica del usuario
+    const getUserId = () => {
+        let id = localStorage.getItem('portfolio_user_id');
+        if (!id) {
+            id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('portfolio_user_id', id);
+        }
+        return id;
+    };
+    const userId = getUserId();
     const modal = document.getElementById('zone-modal');
     const closeBtn = document.getElementById('close-modal');
     const titleEl = document.getElementById('modal-title');
@@ -275,7 +285,10 @@
         try {
             const res = await fetch(`${API_URL}/reward_coins`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-User-ID': userId
+                },
                 body: JSON.stringify({ amount, reward_id: id })
             });
             if (res.ok) {
@@ -285,17 +298,6 @@
                 (el as any).disabled = true;
                 
                 claimedRewardIds.add(id);
-                fetchUserData();
-            } else { 
-                const err = await res.json();
-                if (err.error === "Reward already claimed") {
-                    claimedRewardIds.add(id);
-                    el.innerText = 'COBRADO ✓';
-                    el.classList.add('claimed');
-                    (el as any).disabled = true;
-                } else {
-                    alert("Error: " + err.error);
-                }
             }
         } catch (e) { console.error(e); }
     }

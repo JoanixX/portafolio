@@ -97,6 +97,16 @@
 
 <script>
     const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8080/api';
+    // identificación unica del usuario
+    const getUserId = () => {
+        let id = localStorage.getItem('portfolio_user_id');
+        if (!id) {
+            id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('portfolio_user_id', id);
+        }
+        return id;
+    };
+    const userId = getUserId();
     const player = document.getElementById('player');
     const playerAura = document.getElementById('player-aura');
     const cursor = document.getElementById('cursor-follower');
@@ -300,14 +310,17 @@
             
             const res = await fetch(`${API_URL}/reward_coins`, { 
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-User-ID': userId
+                },
                 body: JSON.stringify({ amount: 10 })
             });
 
             if (res.ok) {
                 const data = await res.json();
                 console.log(`[GameMap] Coin collection successful. Total global: ${data.total}, User now has: ${data.user}`);
-                showToast(`+10 Monedas! (Total: ${data.user})`);
+                showToast(`Has recogido 10 monedas!`);
             } else {
                 console.error("[GameMap] Failed to collect coin:", await res.text());
                 showToast("Error al recoger moneda");
@@ -342,7 +355,14 @@
         createLabels();
         fetchUserState();
         requestAnimationFrame(gameLoop);
-        fetch(`${API_URL}/visit`, { method: 'POST' }).catch(() => {});
+        fetch(`${API_URL}/visit`, { 
+            method: 'POST',
+            headers: { 'X-User-ID': userId }
+        }).then(res => res.json()).then(data => {
+            if (data.coins_added > 0) {
+                showToast(data.message);
+            }
+        }).catch(() => {});
     });
     
     document.addEventListener('skin-changed', () => fetchUserState());

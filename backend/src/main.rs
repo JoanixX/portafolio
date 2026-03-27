@@ -1,7 +1,7 @@
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use std::sync::Mutex;
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 
 mod models;
 mod handlers;
@@ -17,10 +17,7 @@ async fn main() -> std::io::Result<()> {
     let data = web::Data::new(AppState {
         visits: Mutex::new(0),
         total_coins: Mutex::new(0),
-        user_coins: Mutex::new(0),
-        owned_skins: Mutex::new(initial_skins),
-        current_skin: Mutex::new(0),
-        claimed_rewards: Mutex::new(HashSet::new()),
+        users: Mutex::new(HashMap::new()),
     });
 
     let port = std::env::var("PORT")

@@ -1,14 +1,20 @@
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
+use std::time::SystemTime;
+
+pub struct UserRecord {
+    pub coins: u64,
+    pub owned_skins: HashSet<u32>,
+    pub current_skin: u32,
+    pub claimed_rewards: HashSet<String>,
+    pub last_welcome_bonus: SystemTime,
+}
 
 pub struct AppState {
     pub visits: Mutex<u64>,
     pub total_coins: Mutex<u64>,
-    pub user_coins: Mutex<u64>,
-    pub owned_skins: Mutex<HashSet<u32>>,
-    pub current_skin: Mutex<u32>,
-    pub claimed_rewards: Mutex<HashSet<String>>,
+    pub users: Mutex<HashMap<String, UserRecord>>,
 }
 
 #[derive(Serialize)]
