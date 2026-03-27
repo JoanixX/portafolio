@@ -64,7 +64,7 @@
     </div>
 </div>
 
-<style define:vars={{ charactersPath: `url('${import.meta.env.BASE_URL}/characters.png')` }}>
+<style is:global define:vars={{ charactersPath: `url('${import.meta.env.BASE_URL}/characters.png')` }}>
     .char-sprite {
         background-image: var(--charactersPath);
         z-index: 10;
@@ -121,7 +121,9 @@
 
     async function fetchUserData() {
         try {
-            const res = await fetch(`${API_URL}/user`);
+            const res = await fetch(`${API_URL}/user`, {
+                headers: { 'X-User-ID': userId }
+            });
             if (res.ok) {
                 const data = await res.json();
                 if (data.claimed_rewards && Array.isArray(data.claimed_rewards)) {
@@ -243,7 +245,8 @@
         activeFunctionsGame = null;
 
         if (gameType === 'fishing') {
-            activeFunctionsGame = new FishingGame(API_URL, fishGameArea);
+            const charPath = `${import.meta.env.BASE_URL}/characters.png`;
+            activeFunctionsGame = new FishingGame(API_URL, fishGameArea as HTMLElement, charPath);
             activeFunctionsGame.setSkin(userSkin);
             activeFunctionsGame.init();
         } else {
@@ -307,4 +310,14 @@
         modal?.classList.add('hidden');
     });
     closeDetails?.addEventListener('click', () => detailsPanel?.classList.add('hidden'));
+    document.addEventListener('skin-changed', () => {
+        fetchUserData().then(() => {
+            if (activeFunctionsGame) {
+                activeFunctionsGame.setSkin(userSkin);
+                if (typeof activeFunctionsGame.updateFishermanVisual === 'function') {
+                    activeFunctionsGame.updateFishermanVisual();
+                }
+            }
+        });
+    });
 </script>

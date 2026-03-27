@@ -18,9 +18,12 @@ export class FishingGame {
     private currentSkin: number = 0;
     private boundHandleKey: (e: KeyboardEvent) => void;
 
-    constructor(apiUrl: string, container: HTMLElement) {
+    private charactersPath: string;
+
+    constructor(apiUrl: string, container: HTMLElement, charactersPath: string) {
         this.apiUrl = apiUrl;
         this.container = container;
+        this.charactersPath = charactersPath;
         this.boundHandleKey = this.handleFishKey.bind(this);
     }
 
@@ -33,19 +36,13 @@ export class FishingGame {
         if (!this.container) return;
         this.cleanup(); 
 
-        // calcular skin
-        const col = this.currentSkin % 5;
-        const row = Math.floor(this.currentSkin / 5);
-        const xPos = col * 25;
-        const yPos = row * 100;
-
         // renderizar mundo
         this.container.innerHTML = `
             <div class="score-board">Score: <span id="f-score">0</span> | Time: <span id="f-time">60</span></div>
             <div id="hook-line" class="hook-line"></div>
             <div id="hook" class="hook">⚓</div>
             <div class="fisherman-container">
-                <div class="char-sprite" style="background-position: ${xPos}% ${yPos}%"></div>
+                <div id="fisherman-sprite" class="char-sprite"></div>
                 <div class="fisherman-static">🎣</div>
             </div>
             <div id="entities-container"></div>
@@ -57,6 +54,9 @@ export class FishingGame {
             </div>
         `;
         
+        // aplicar imagen y posicion skin
+        this.updateFishermanVisual();
+        
         // posicion anzuelo
         this.hookY = 50;
         this.renderHook();
@@ -64,6 +64,18 @@ export class FishingGame {
         // boton jugar
         const btn = this.container.querySelector('#play-game-btn');
         if (btn) btn.addEventListener('click', () => this.tryStartGame());
+    }
+
+    public updateFishermanVisual() {
+        const sprite = this.container.querySelector('#fisherman-sprite') as HTMLElement;
+        if (sprite) {
+            const col = this.currentSkin % 5;
+            const row = Math.floor(this.currentSkin / 5);
+            const xPos = col * 25;
+            const yPos = row * 100;
+            sprite.style.backgroundImage = `url('${this.charactersPath}')`;
+            sprite.style.backgroundPosition = `${xPos}% ${yPos}%`;
+        }
     }
 
     private getUserId(): String {

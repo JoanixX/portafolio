@@ -173,7 +173,9 @@
 
     async function fetchUserState() {
         try {
-            const res = await fetch(`${API_URL}/user`);
+            const res = await fetch(`${API_URL}/user`, {
+                headers: { 'X-User-ID': userId }
+            });
             if (res.ok) {
                 const data = await res.json();
                 currentSkin = data.current_skin;
