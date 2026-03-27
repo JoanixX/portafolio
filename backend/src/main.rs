@@ -23,7 +23,12 @@ async fn main() -> std::io::Result<()> {
         claimed_rewards: Mutex::new(HashSet::new()),
     });
 
-    println!("Backend running at http://localhost:8080");
+    let port = std::env::var("PORT")
+        .unwrap_or_else(|_| "8080".to_string())
+        .parse::<u16>()
+        .expect("PORT must be a number");
+
+    println!("Backend running at http://0.0.0.0:{}", port);
 
     HttpServer::new(move || {
         let cors = Cors::default()
@@ -36,7 +41,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(data.clone())
             .configure(routes::config)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("0.0.0.0", port))?
     .run()
     .await
 }
