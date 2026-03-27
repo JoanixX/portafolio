@@ -378,7 +378,7 @@ export class FishingGame {
         if (this.score > 0) {
             finalStatus += ` Ganaste: ${this.score} monedas.`;
             try {
-                await fetch(`${this.apiUrl}/collect`, {
+                await fetch(`${this.apiUrl}/reward_coins`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ amount: this.score, reward_id: null }) 

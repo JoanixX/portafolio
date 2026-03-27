@@ -273,7 +273,7 @@
 
     async function doClaim(id: string, amount: number, el: HTMLElement) {
         try {
-            const res = await fetch(`${API_URL}/collect`, {
+            const res = await fetch(`${API_URL}/reward_coins`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ amount, reward_id: id })
