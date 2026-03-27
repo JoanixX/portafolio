@@ -250,7 +250,7 @@ solo unas monedas para comprarte un skin, que es, evidentemente, totalmente nece
   },
   magic_tree: {
     type: "minigame",
-    game: "placeholder",
+    game: "connect4",
     bgImage: "magicTree_minigame.png",
     title: "ÁRBOL MÁGICO - ESTRUCTURAS DE DATOS",
     body: `<p class="lore-text">Bajo las ramas de este antiguo árbol binario, el sabio Linus Torvalds te retará a un duelo de lógica pura. No es solo suerte; es un algoritmo minimax en acción.</p>

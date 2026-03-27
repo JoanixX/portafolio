@@ -75,6 +75,7 @@
 <script>
     import { contentMap, type Project, type ZoneContent } from '../data/zones';
     import { FishingGame } from '../game/fishing';
+    import { Connect4Game } from '../game/connect4';
     import '../styles/modal.css';
 
     const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8080/api';
@@ -117,7 +118,7 @@
 
     let claimedRewardIds = new Set<string>();
     let userSkin = 0;
-    let activeFunctionsGame: FishingGame | null = null; // instancia
+    let activeFunctionsGame: any = null; // instancia o FishingGame o Connect4Game
 
     async function fetchUserData() {
         try {
@@ -248,6 +249,9 @@
             const charPath = `${import.meta.env.BASE_URL}/characters.png`;
             activeFunctionsGame = new FishingGame(API_URL, fishGameArea as HTMLElement, charPath);
             activeFunctionsGame.setSkin(userSkin);
+            activeFunctionsGame.init();
+        } else if (gameType === 'connect4') {
+            activeFunctionsGame = new Connect4Game(API_URL, fishGameArea as HTMLElement);
             activeFunctionsGame.init();
         } else {
             // hud placeholders
