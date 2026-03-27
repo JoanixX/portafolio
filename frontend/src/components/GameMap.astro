@@ -96,7 +96,7 @@
 </div>
 
 <script>
-    const API_URL = import.meta.env.DEV ? 'http://localhost:8080/api' : '/api';
+    const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8080/api';
     const player = document.getElementById('player');
     const playerAura = document.getElementById('player-aura');
     const cursor = document.getElementById('cursor-follower');

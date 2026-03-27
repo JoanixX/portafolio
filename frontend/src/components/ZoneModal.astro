@@ -77,7 +77,7 @@
     import { FishingGame } from '../game/fishing';
     import '../styles/modal.css';
 
-    const API_URL = import.meta.env.DEV ? 'http://localhost:8080/api' : '/api';
+    const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8080/api';
     const modal = document.getElementById('zone-modal');
     const closeBtn = document.getElementById('close-modal');
     const titleEl = document.getElementById('modal-title');
