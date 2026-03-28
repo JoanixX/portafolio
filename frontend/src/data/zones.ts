@@ -260,7 +260,7 @@ solo unas monedas para comprarte un skin, que es, evidentemente, totalmente nece
   },
   garden: {
     type: "minigame",
-    game: "placeholder",
+    game: "quiz",
     bgImage: "garden_minigame.png",
     title: "JARDÍN DEL SABER - QUIZ TECH",
     body: `<p class="lore-text">Un jardín floreciente donde cada flor es una pregunta de conocimiento. Desde punteros en C++ hasta la historia de los mundiales de fútbol. Solo los verdaderos full-stack sobrevivirán.</p>

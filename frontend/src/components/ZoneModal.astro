@@ -76,6 +76,7 @@
     import { contentMap, type Project, type ZoneContent } from '../data/zones';
     import { FishingGame } from '../game/fishing';
     import { Connect4Game } from '../game/connect4';
+    import { QuizGame } from '../game/quiz';
     import '../styles/modal.css';
 
     const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8080/api';
@@ -252,6 +253,9 @@
             activeFunctionsGame.init();
         } else if (gameType === 'connect4') {
             activeFunctionsGame = new Connect4Game(API_URL, fishGameArea as HTMLElement);
+            activeFunctionsGame.init();
+        } else if (gameType === 'quiz') {
+            activeFunctionsGame = new QuizGame(API_URL, fishGameArea as HTMLElement);
             activeFunctionsGame.init();
         } else {
             // hud placeholders

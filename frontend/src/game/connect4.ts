@@ -74,19 +74,19 @@ export class Connect4Game {
                     grid-template-columns: repeat(7, 30px);
                     grid-template-rows: repeat(6, 30px);
                     gap: 5px;
-                    background: #1e3a8a; /* Blue board */
+                    background: rgba(0, 0, 0, 0.4); 
                     padding: 10px;
                     border-radius: 10px;
-                    border: 4px solid #1e40af;
+                    border: 4px solid rgba(255, 255, 255, 0.1);
                     box-shadow: 0 0 15px rgba(0,0,0,0.5);
-                    margin-top: 40px; /* Space for linus */
+                    margin-top: 69px; 
                     pointer-events: none;
                     opacity: 0.5;
                 }
                 .c4-cell {
                     width: 30px;
                     height: 30px;
-                    background: #000;
+                    background: rgba(0, 0, 0, 0.6);
                     border-radius: 50%;
                     cursor: pointer;
                     transition: background 0.2s, transform 0.3s;
@@ -96,13 +96,13 @@ export class Connect4Game {
                     box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
                 }
                 .c4-cell.p1 {
-                    background: #ef4444; /* Rojo */
-                    box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 0 8px #ef4444;
+                    background: #5d4037; /* Marrón oscuro */
+                    box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 0 8px #5d4037;
                     animation: dropIn 0.3s ease-out;
                 }
                 .c4-cell.p2 {
-                    background: #eab308; /* Amarillo */
-                    box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 0 8px #eab308;
+                    background: #aed581; /* Verde claro */
+                    box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 0 8px #aed581;
                     animation: dropIn 0.3s ease-out;
                 }
                 .c4-cell.win-pulse {
