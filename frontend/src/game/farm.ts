@@ -27,19 +27,21 @@ export class FarmGame {
         this.cleanup();
 
         this.container.innerHTML = `
-            <div id="farm-ui" style="width: 100%; height: 100%; position: relative; display: none; flex-direction: column; overflow: hidden; background: linear-gradient(to bottom, #87CEEB 0%, #a8e6cf 60%, #81c784 100%); border-radius: 12px; cursor: crosshair;">
+            <div id="farm-ui" style="width: 100%; height: 100%; position: relative; display: none; flex-direction: column; overflow: hidden; background: transparent; border-radius: 12px; cursor: crosshair;">
                 <!-- HUD -->
-                <div style="position: absolute; top: 10px; left: 15px; z-index: 10; font-family: monospace; font-size: 1.2rem; font-weight: 800; color: #fff; text-shadow: 1px 1px 4px #000;">
+                <div style="position: absolute; top: 20px; left: 25px; z-index: 10; font-family: monospace; font-size: 1rem; font-weight: 800; color: #fff; text-shadow: 2px 2px 4px #000;">
                     TIEMPO: <span id="farm-timer" style="color: #ef4444;">40</span>s
                 </div>
-                <div style="position: absolute; top: 10px; right: 15px; z-index: 10; font-family: monospace; font-size: 1.2rem; font-weight: 800; color: #ffd43b; text-shadow: 1px 1px 4px #000;">
-                    PUNTOS (COINS): <span id="farm-score">0</span>
+                <div style="position: absolute; top: 20px; right: 25px; z-index: 10; font-family: monospace; font-size: 1rem; font-weight: 800; color: #ffd43b; text-shadow: 2px 2px 4px #000;">
+                    COINS: <span id="farm-score">0</span>
                 </div>
-                <div id="farm-easter" style="position: absolute; top: 40px; right: 15px; z-index: 10; font-size: 1.5rem; cursor: pointer;" title="Nido vacío">🪹</div>
+                <div id="farm-easter" style="position: absolute; top: 45px; right: 25px; z-index: 10; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(1px 1px 2px #000);" title="Nido vacío">🪹</div>
+                
                 <!-- PLAY AREA -->
                 <div id="farm-play-area" style="width: 100%; height: 100%; position: relative; pointer-events: auto;">
                     <!-- Animals will spawn here -->
                 </div>
+                
                 <div id="farm-feedback" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: 900; color: #fff; text-shadow: 2px 2px 10px #000; pointer-events: none; opacity: 0; transition: all 0.3s; z-index: 50;">
                 </div>
             </div>
@@ -52,18 +54,19 @@ export class FarmGame {
             <style>
                 .farm-entity {
                     position: absolute;
-                    font-size: 2.5rem;
+                    font-size: 1.8rem;
                     user-select: none;
                     cursor: crosshair;
                     transition: transform 0.1s;
-                    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4));
+                    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+                    z-index: 5;
                 }
                 .farm-entity:active {
                     transform: scale(0.8);
                 }
                 .egg-splat {
                     position: absolute;
-                    font-size: 2rem;
+                    font-size: 1.5rem;
                     pointer-events: none;
                     animation: splat 0.5s ease-out forwards;
                     z-index: 20;
@@ -72,7 +75,7 @@ export class FarmGame {
                     position: absolute;
                     font-family: monospace;
                     font-weight: 900;
-                    font-size: 1.5rem;
+                    font-size: 1.2rem;
                     pointer-events: none;
                     animation: floatUp 0.8s ease-out forwards;
                     z-index: 25;
@@ -85,15 +88,7 @@ export class FarmGame {
                 }
                 @keyframes floatUp {
                     0% { transform: translateY(0) scale(1); opacity: 1; }
-                    100% { transform: translateY(-40px) scale(1.2); opacity: 0; }
-                }
-                @keyframes walkRight {
-                    from { left: -50px; }
-                    to { left: 110%; }
-                }
-                @keyframes walkLeft {
-                    from { left: 110%; }
-                    to { left: -50px; }
+                    100% { transform: translateY(-30px) scale(1.2); opacity: 0; }
                 }
             </style>
         `;
@@ -109,7 +104,7 @@ export class FarmGame {
         const nest = this.container.querySelector('#farm-easter');
         if (nest) {
             nest.addEventListener('click', (e) => {
-                e.stopPropagation(); // Evitar disparar un huevo
+                e.stopPropagation();
                 this.clickCount++;
                 if (this.clickCount === 7 && this.gameActive) {
                     nest.textContent = '🥚✨';
@@ -175,7 +170,7 @@ export class FarmGame {
 
         this.spawnInterval = window.setInterval(() => {
             if (this.gameActive) this.spawnEntity();
-        }, 800); // Aparece un animal cada 0.8s
+        }, 800);
     }
 
     private updateHUD() {
@@ -185,7 +180,7 @@ export class FarmGame {
             if(this.timeLeft <= 10) timerEl.style.color = "#c92a2a";
             else timerEl.style.color = "#ef4444";
         }
-        const scoreEl = this.container.querySelector('#farm-score');
+        const scoreEl = this.container.querySelector('#farm-score') as HTMLElement;
         if (scoreEl) scoreEl.textContent = this.score.toString();
     }
 
@@ -198,6 +193,7 @@ export class FarmGame {
         const rect = playArea.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
+
         const splat = document.createElement('div');
         splat.textContent = '🍳';
         splat.className = 'egg-splat';
@@ -206,18 +202,14 @@ export class FarmGame {
         playArea.appendChild(splat);
 
         setTimeout(() => splat.remove(), 500);
-        let hit = false;
 
         const entities = Array.from(playArea.querySelectorAll('.farm-entity')) as HTMLElement[];
         for (let i = entities.length - 1; i >= 0; i--) {
             const ent = entities[i];
             const entRect = ent.getBoundingClientRect();
-            
             if (e.clientX >= entRect.left && e.clientX <= entRect.right &&
                 e.clientY >= entRect.top && e.clientY <= entRect.bottom) {
-                
                 this.handleHit(ent, x, y);
-                hit = true;
                 break;
             }
         }
@@ -264,15 +256,14 @@ export class FarmGame {
         if (!playArea) return;
 
         const types = [
-            { type: 'chicken', emoji: '🐥', speed: 2.5, chance: 0.60 },
-            { type: 'pig', emoji: '🐷', speed: 4.5, chance: 0.25 },
-            { type: 'cow', emoji: '🐮', speed: 7.0, chance: 0.12 },
-            { type: 'fox', emoji: '🦊', speed: 1.5, chance: 0.03 }
+            { type: 'chicken', emoji: '🐥', speed: 1800, chance: 0.45 },
+            { type: 'pig', emoji: '🐷', speed: 4500, chance: 0.35 },
+            { type: 'cow', emoji: '🐮', speed: 6000, chance: 0.17 },
+            { type: 'fox', emoji: '🦊', speed: 1200, chance: 0.03 }
         ];
 
         let rand = Math.random();
         let selected = types[0];
-        
         let cumulative = 0;
         for (const t of types) {
             cumulative += t.chance;
@@ -287,22 +278,91 @@ export class FarmGame {
         entity.dataset.type = selected.type;
         entity.textContent = selected.emoji;
 
-        const topPercent = 30 + Math.random() * 50;
-        entity.style.top = `${topPercent}%`;
+        const pathPoints = [
+            { x: 15, y: -10 },
+            { x: 45, y: 110 },
+            { x: 110, y: 55 },
+            { x: -10, y: 75 }
+        ];
 
-        const goRight = Math.random() > 0.5;
-        if (goRight) {
-            entity.style.animation = `walkRight ${selected.speed}s linear forwards`;
-            entity.style.transform = 'scaleX(1)';
-        } else {
-            entity.style.animation = `walkLeft ${selected.speed}s linear forwards`;
-            entity.style.transform = 'scaleX(-1)';
-        }
+        const startIdx = Math.floor(Math.random() * pathPoints.length);
+        let endIdx = Math.floor(Math.random() * pathPoints.length);
+        while (endIdx === startIdx) endIdx = Math.floor(Math.random() * pathPoints.length);
 
+        const start = pathPoints[startIdx];
+        const end = pathPoints[endIdx];
+
+        const areaWidth = (playArea as HTMLElement).clientWidth;
+        const areaHeight = (playArea as HTMLElement).clientHeight;
+
+        let curX = (start.x / 100) * areaWidth;
+        let curY = (start.y / 100) * areaHeight;
+        let targetX = (end.x / 100) * areaWidth;
+        let targetY = (end.y / 100) * areaHeight;
+
+        const duration = selected.speed / 1000;
+        const fps = 60;
+        const totalFrames = duration * fps;
+        let vx = (targetX - curX) / totalFrames;
+        let vy = (targetY - curY) / totalFrames;
+        entity.style.left = `${curX}px`;
+        entity.style.top = `${curY}px`;
+        if (vx < 0) entity.style.transform = 'scaleX(-1)';
         playArea.appendChild(entity);
-        entity.addEventListener('animationend', () => {
-            if(entity.parentElement) entity.remove();
-        });
+
+        const hitboxes = [
+            { xMin: 0.60, xMax: 0.95, yMin: 0.05, yMax: 0.30 },
+            { xMin: -0.05, xMax: 0.35, yMin: 0.30, yMax: 0.60 },
+            { xMin: 0.75, xMax: 1.05, yMin: 0.70, yMax: 0.95 }
+        ];
+
+        let frame = 0;
+        const moveInterval = window.setInterval(() => {
+            if (!this.gameActive) {
+                clearInterval(moveInterval);
+                entity.remove();
+                return;
+            }
+            curX += vx;
+            curY += vy;
+
+            const pX = curX / areaWidth;
+            const pY = curY / areaHeight;
+
+            for (const box of hitboxes) {
+                if (pX >= box.xMin && pX <= box.xMax && pY >= box.yMin && pY <= box.yMax) {
+                    const fromTop = Math.abs(pY - box.yMin);
+                    const fromBottom = Math.abs(pY - box.yMax);
+                    const fromLeft = Math.abs(pX - box.xMin);
+                    const fromRight = Math.abs(pX - box.xMax);
+                    
+                    if (Math.min(fromTop, fromBottom) < Math.min(fromLeft, fromRight)) {
+                        vy = -vy;
+                    } else {
+                        vx = -vx;
+                        entity.style.transform = vx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+                    }
+                    
+                    curX += vx * 2;
+                    curY += vy * 2;
+                    break;
+                }
+            }
+
+            entity.style.left = `${curX}px`;
+            entity.style.top = `${curY}px`;
+
+            frame++;
+            if (curX < -50 || curX > areaWidth + 50 || curY < -50 || curY > areaHeight + 50) {
+                clearInterval(moveInterval);
+                entity.remove();
+            }
+            
+            if (frame > totalFrames * 2) {
+                clearInterval(moveInterval);
+                entity.remove();
+            }
+        }, 1000 / fps);
     }
 
     private async endGame() {
