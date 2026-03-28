@@ -77,6 +77,7 @@
     import { FishingGame } from '../game/fishing';
     import { Connect4Game } from '../game/connect4';
     import { QuizGame } from '../game/quiz';
+    import { FarmGame } from '../game/farm';
     import '../styles/modal.css';
 
     const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8080/api';
@@ -256,6 +257,9 @@
             activeFunctionsGame.init();
         } else if (gameType === 'quiz') {
             activeFunctionsGame = new QuizGame(API_URL, fishGameArea as HTMLElement);
+            activeFunctionsGame.init();
+        } else if (gameType === 'farm') {
+            activeFunctionsGame = new FarmGame(API_URL, fishGameArea as HTMLElement);
             activeFunctionsGame.init();
         } else {
             // hud placeholders

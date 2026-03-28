@@ -240,7 +240,7 @@ solo unas monedas para comprarte un skin, que es, evidentemente, totalmente nece
   },
   farm: {
     type: "minigame",
-    game: "placeholder",
+    game: "farm",
     bgImage: "farm_minigame.png",
     title: "GRANJA DE POLLOS - CONTROL DE PROCESOS",
     body: `<p class="lore-text">Una granja caótica donde los pollos corren sin control, simulando transacciones desbordadas en un servidor. Tu misión es etiquetar (disparar huevos) a los procesos correctos (pollos) sin afectar a los servicios críticos (otros animales).</p>
