@@ -73,13 +73,14 @@ export class Connect4Game {
                     display: grid;
                     grid-template-columns: repeat(7, 30px);
                     grid-template-rows: repeat(6, 30px);
-                    gap: 5px;
+                    gap: 6.4px;
                     background: rgba(0, 0, 0, 0.4); 
                     padding: 10px;
                     border-radius: 10px;
                     border: 4px solid rgba(255, 255, 255, 0.1);
                     box-shadow: 0 0 15px rgba(0,0,0,0.5);
-                    margin-top: 69px; 
+                    margin-top: 72px;
+                    margin-right: 5px;
                     pointer-events: none;
                     opacity: 0.5;
                 }

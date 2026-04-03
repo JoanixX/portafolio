@@ -43,7 +43,7 @@ export class FishingGame {
             <div id="hook" class="hook">⚓</div>
             <div class="fisherman-container">
                 <div id="fisherman-sprite" class="char-sprite"></div>
-                <div class="fisherman-static">🎣</div>
+                <div class="fisherman-static">🦯</div>
             </div>
             <div id="entities-container"></div>
             
@@ -302,7 +302,7 @@ export class FishingGame {
                     this.hookState = 'waiting';
                     this.caughtEntity = e;
                     if (statusEl) statusEl.innerText = "Ya lo pescaste, ahora presiona espacio para volver";
-                    e.el.style.transform = 'scale(1.4)';
+                    e.el.style.transform = 'translateX(-25%) scale(1.4)';
                     e.el.style.filter = 'drop-shadow(0 0 10px gold)';
                 }
                 break;
@@ -358,7 +358,7 @@ export class FishingGame {
             
             if (this.caughtEntity) {
                 // fijar entidad
-                this.caughtEntity.el.style.left = `calc(50% - 15px)`; 
+                this.caughtEntity.el.style.left = `49%`; 
                 this.caughtEntity.el.style.top = `${this.hookY + 20}px`;
             }
         }
