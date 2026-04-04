@@ -278,12 +278,20 @@
 
     /* Estilo para moviles - APILAR UNO ENCIMA DE OTRO */
     @media (max-width: 1023px) and (max-height: 869px) {
+        .start-screen {
+            display: block; /* Permitir scroll natural */
+            overflow-y: auto;
+            align-items: flex-start;
+            padding: 20px 0;
+        }
         .main-wrapper {
             flex-direction: column;
             gap: 20px;
             height: auto;
+            width: 90%;
+            margin: 0 auto;
             padding: 40px 0;
-            overflow-y: auto;
+            overflow-y: visible; /* El scroll lo maneja el padre */
         }
         .left-panel, .right-panel {
             flex: none;
