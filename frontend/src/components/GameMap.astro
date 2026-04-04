@@ -93,6 +93,16 @@
 
     <!-- cursor seguidor -->
     <div id="cursor-follower" class="golden-square"></div>
+
+    <!-- Controles táctiles (D-pad) -->
+    <div id="mobile-controls" class="mobile-controls">
+        <button class="d-btn up" data-key="ArrowUp">▲</button>
+        <div class="d-row">
+            <button class="d-btn left" data-key="ArrowLeft">◀</button>
+            <button class="d-btn right" data-key="ArrowRight">▶</button>
+        </div>
+        <button class="d-btn down" data-key="ArrowDown">▼</button>
+    </div>
 </div>
 
 <script>
@@ -295,6 +305,28 @@
         if (keys.hasOwnProperty(e.code)) keys[e.code] = false;
     });
 
+    // Controles táctiles (D-pad logic)
+    const mobileBtns = document.querySelectorAll('.d-btn');
+    mobileBtns.forEach(btn => {
+        const key = btn.getAttribute('data-key');
+        if (!key) return;
+
+        const startMove = (e: Event) => {
+            e.preventDefault();
+            keys[key as keyof typeof keys] = true;
+            btn.classList.add('active');
+        };
+        const endMove = (e: Event) => {
+            e.preventDefault();
+            keys[key as keyof typeof keys] = false;
+            btn.classList.remove('active');
+        };
+
+        btn.addEventListener('touchstart', startMove, { passive: false });
+        btn.addEventListener('touchend', endMove, { passive: false });
+        btn.addEventListener('touchcancel', endMove, { passive: false });
+    });
+
     window.addEventListener('mousemove', (e) => {
         if (cursor) {
             cursor.style.left = `${e.clientX}px`;
@@ -386,6 +418,8 @@
         position: relative;
         width: 100vw;
         height: 100vh;
+        transform: scale(var(--map-scale));
+        transition: transform 0.3s ease;
     }
 
     .map-image {
@@ -398,11 +432,12 @@
 
     .player-container {
         position: absolute;
-        width: 36px; 
-        height: 55px;
+        width: calc(36px * var(--char-scale)); 
+        height: calc(55px * var(--char-scale));
         z-index: 100;
         pointer-events: none;
         transform: translate(-50%, -50%);
+        transition: width 0.3s, height 0.3s;
     }
 
     .character-sprite {
@@ -564,6 +599,52 @@
         z-index: 9999;
         transform: translate(-50%, -50%) rotate(45deg);
         animation: spin 3s linear infinite;
+    }
+
+    @media (pointer: coarse) {
+        .golden-square { display: none; }
+        .game-container { cursor: auto; }
+    }
+
+    .mobile-controls {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        z-index: 200;
+        opacity: 0.6;
+    }
+
+    @media (pointer: coarse) {
+        .mobile-controls { display: flex; }
+    }
+
+    .d-row {
+        display: flex;
+        gap: 40px;
+    }
+
+    .d-btn {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        color: white;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        user-select: none;
+        touch-action: none;
+    }
+
+    .d-btn.active {
+        background: rgba(255, 255, 255, 0.5);
+        transform: scale(0.9);
     }
 
     @keyframes spin {

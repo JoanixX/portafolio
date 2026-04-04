@@ -99,6 +99,11 @@ export class FarmGame {
         const playArea = this.container.querySelector('#farm-play-area');
         if(playArea) {
             playArea.addEventListener('mousedown', (e) => this.shootEgg(e as MouseEvent));
+            playArea.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = (e as TouchEvent).touches[0];
+                this.shootEgg(touch as any);
+            }, { passive: false });
         }
 
         const nest = this.container.querySelector('#farm-easter');

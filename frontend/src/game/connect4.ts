@@ -93,6 +93,30 @@ export class Connect4Game {
                     transition: background 0.2s, transform 0.3s;
                     box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
                 }
+
+@media (max-width: 1024px) {
+    .c4-board {
+        grid-template-columns: repeat(7, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        width: 320px;
+        height: 280px;
+        max-width: 85vw;
+        max-height: 50vh;
+        gap: 5px;
+    }
+    .c4-cell {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+    }
+}
+
+@media (max-width: 480px) {
+    .c4-board {
+        width: 260px;
+        height: 230px;
+    }
+}
                 .c4-cell:hover {
                     box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
                 }

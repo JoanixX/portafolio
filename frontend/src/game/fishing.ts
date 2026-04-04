@@ -64,6 +64,14 @@ export class FishingGame {
         // boton jugar
         const btn = this.container.querySelector('#play-game-btn');
         if (btn) btn.addEventListener('click', () => this.tryStartGame());
+
+        // soporte tactil para el juego
+        this.container.addEventListener('touchstart', (e) => {
+            if (this.gameLoopId && this.hookState !== 'idle') {
+                e.preventDefault();
+                this.handleAction();
+            }
+        }, { passive: false });
     }
 
     public updateFishermanVisual() {
@@ -192,14 +200,17 @@ export class FishingGame {
     private handleFishKey(e: KeyboardEvent) {
         if (e.code === 'Space') {
             e.preventDefault();
-            const statusEl = this.container.querySelector('#game-status') as HTMLElement;
-            
-            if (this.hookState === 'idle') {
-                this.hookState = 'dropping';
-            } else if (this.hookState === 'waiting') {
-                this.hookState = 'reeling';
-                if (statusEl) statusEl.innerText = "¡Subiendo!";
-            }
+            this.handleAction();
+        }
+    }
+
+    private handleAction() {
+        const statusEl = this.container.querySelector('#game-status') as HTMLElement;
+        if (this.hookState === 'idle') {
+            this.hookState = 'dropping';
+        } else if (this.hookState === 'waiting') {
+            this.hookState = 'reeling';
+            if (statusEl) statusEl.innerText = "¡Subiendo!";
         }
     }
 
@@ -224,11 +235,12 @@ export class FishingGame {
         el.innerText = type.icon;
         this.container.querySelector('#entities-container')?.appendChild(el);
 
+        const startX = this.container.clientWidth + 50;
         this.entities.push({
             id: Math.random().toString(),
             type: type.id,
             val: type.val,
-            x: 420, // empieza fuera a la derecha
+            x: startX, 
             y: y,
             el: el
         });
@@ -246,9 +258,10 @@ export class FishingGame {
     }
 
     private updateHook() {
+        const maxHeight = this.container.clientHeight - 40;
         if (this.hookState === 'dropping') {
             this.hookY += this.HOOK_SPEED;
-            if (this.hookY > 340) {
+            if (this.hookY > maxHeight) {
                 this.hookState = 'reeling';
             }
             this.checkCollisionsDown();

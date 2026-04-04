@@ -47,7 +47,7 @@ export class QuizGame {
                 <div style="flex-grow: 0.6; display: flex; justify-content: flex-end; align-items: flex-end; transform: translateX(15px);">
                   <div style="display: flex; align-items: center; gap: 8px;">
                       <button id="quiz-prev-btn" class="nav-btn">◀</button>
-                      <div id="quiz-options-container" style="display: flex; flex-direction: column; gap: 8px; width: 170px;">
+                      <div id="quiz-options-container" style="display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 200px;">
                           <!-- Botones en paginas de a 2 -->
                       </div>
                       <button id="quiz-next-btn" class="nav-btn">▶</button>
