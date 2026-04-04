@@ -126,7 +126,10 @@
     // estado del juego
     let playerPixels = { x: window.innerWidth / 2, y: window.innerHeight * 0.6 };
     let currentSkin = 0;
-    let keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+    let keys = { 
+        ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false,
+        KeyW: false, KeyS: false, KeyA: false, KeyD: false 
+    };
     let facingScale = 1;
     let activeZone: string | null = null;
     
@@ -206,9 +209,17 @@
         }
     }
 
+    function isMobileLayout() {
+        return window.innerWidth < 1024 && window.innerHeight < 870;
+    }
+
     function isColliding(x: number, y: number) {
-        const px = (x / window.innerWidth) * 100;
-        const py = (y / window.innerHeight) * 100;
+        // Obtenemos dimensiones base reales del mapa
+        const baseW = mapWrapper?.clientWidth || window.innerWidth;
+        const baseH = mapWrapper?.clientHeight || window.innerHeight;
+
+        const px = (x / baseW) * 100;
+        const py = (y / baseH) * 100;
         const currentObstacles = getObstacles();
 
         for (const obs of currentObstacles) {
@@ -220,8 +231,11 @@
     }
 
     function checkInteractions() {
-        const px = (playerPixels.x / window.innerWidth) * 100;
-        const py = (playerPixels.y / window.innerHeight) * 100;
+        const baseW = mapWrapper?.clientWidth || window.innerWidth;
+        const baseH = mapWrapper?.clientHeight || window.innerHeight;
+
+        const px = (playerPixels.x / baseW) * 100;
+        const py = (playerPixels.y / baseH) * 100;
 
         // colision monedas
         document.querySelectorAll('.coin:not(.collected)').forEach(coin => {
@@ -232,7 +246,7 @@
             const dx = Math.abs(px - cL);
             const dy = Math.abs(py - cT);
 
-            if (dx < 1.8 && dy < 1.8) { // Reduced from 3 to 1.8 for precision
+            if (dx < 2.5 && dy < 2.5) { 
                 c.click();
             }
         });
@@ -263,36 +277,75 @@
         if (!foundZone) activeZone = null;
     }
 
+    function updateCamera() {
+        const isMobile = isMobileLayout();
+        if (!isMobile || !mapWrapper) {
+            if (mapWrapper && mapWrapper.style.transform) mapWrapper.style.transform = '';
+            return;
+        }
+        
+        const viewW = window.innerWidth;
+        const viewH = window.innerHeight;
+        const mapW = mapWrapper.clientWidth; 
+        const mapH = mapWrapper.clientHeight;
+        
+        // Obtenemos el scale de los estilos computados
+        const scaleStr = getComputedStyle(document.documentElement).getPropertyValue('--map-scale') || '1';
+        const sc = parseFloat(scaleStr);
+
+        const pX = playerPixels.x;
+        const pY = playerPixels.y;
+
+        // La posicion del centro de la pantalla en coordenadas de mapa (unscaled)
+        // Para que pX quede centrado despues del scale: (pX - camX) * scale = viewW / 2
+        // camX = pX - (viewW / 2) / scale
+        let camX = pX - (viewW / (2 * sc));
+        let camY = pY - (viewH / (2 * sc));
+
+        camX = Math.max(0, Math.min(camX, mapW - viewW/sc));
+        camY = Math.max(0, Math.min(camY, mapH - viewH/sc));
+
+        mapWrapper.style.transform = `translate(${-camX}px, ${-camY}px) scale(${sc})`;
+    }
+
     function gameLoop(currentTime: number) {
         if (currentTime - lastStepTime > moveCooldown) {
             let nextX = playerPixels.x;
             let nextY = playerPixels.y;
             let moved = false;
             
-            if (keys.ArrowUp) { nextY -= stepSize; moved = true; }
-            else if (keys.ArrowDown) { nextY += stepSize; moved = true; }
-            else if (keys.ArrowLeft) { 
+            // D-pad y teclas
+            if (keys.ArrowUp || keys.KeyW) { nextY -= stepSize; moved = true; }
+            else if (keys.ArrowDown || keys.KeyS) { nextY += stepSize; moved = true; }
+            
+            if (keys.ArrowLeft || keys.KeyA) { 
                 nextX -= stepSize; 
                 moved = true; 
                 facingScale = -1; 
             }
-            else if (keys.ArrowRight) { 
+            else if (keys.ArrowRight || keys.KeyD) { 
                 nextX += stepSize; 
                 moved = true; 
                 facingScale = 1; 
             }
 
-            if (moved && !isColliding(nextX, nextY)) {
-                playerPixels.x = Math.max(0, Math.min(window.innerWidth, nextX));
-                playerPixels.y = Math.max(0, Math.min(window.innerHeight, nextY));
-                
-                if (player && playerSprite) {
-                    player.style.left = `${playerPixels.x}px`;
-                    player.style.top = `${playerPixels.y}px`;
-                    playerSprite.style.transform = `scaleX(${facingScale})`;
+            if (moved) {
+                const mapW = mapWrapper?.clientWidth || window.innerWidth;
+                const mapH = mapWrapper?.clientHeight || window.innerHeight;
+
+                if (!isColliding(nextX, nextY)) {
+                    playerPixels.x = Math.max(0, Math.min(mapW, nextX));
+                    playerPixels.y = Math.max(0, Math.min(mapH, nextY));
+                    
+                    if (player && playerSprite) {
+                        player.style.left = `${playerPixels.x}px`;
+                        player.style.top = `${playerPixels.y}px`;
+                        playerSprite.style.transform = `scaleX(${facingScale})`;
+                    }
+                    checkInteractions();
+                    if (isMobileLayout()) updateCamera();
+                    lastStepTime = currentTime;
                 }
-                checkInteractions();
-                lastStepTime = currentTime;
             }
         }
         requestAnimationFrame(gameLoop);
@@ -305,27 +358,6 @@
         if (keys.hasOwnProperty(e.code)) keys[e.code] = false;
     });
 
-    // Controles táctiles (D-pad logic)
-    const mobileBtns = document.querySelectorAll('.d-btn');
-    mobileBtns.forEach(btn => {
-        const key = btn.getAttribute('data-key');
-        if (!key) return;
-
-        const startMove = (e: Event) => {
-            e.preventDefault();
-            keys[key as keyof typeof keys] = true;
-            btn.classList.add('active');
-        };
-        const endMove = (e: Event) => {
-            e.preventDefault();
-            keys[key as keyof typeof keys] = false;
-            btn.classList.remove('active');
-        };
-
-        btn.addEventListener('touchstart', startMove, { passive: false });
-        btn.addEventListener('touchend', endMove, { passive: false });
-        btn.addEventListener('touchcancel', endMove, { passive: false });
-    });
 
     window.addEventListener('mousemove', (e) => {
         if (cursor) {
@@ -382,10 +414,37 @@
     });
 
     document.addEventListener('game-start', () => {
+        const isMobile = isMobileLayout();
+        const baseW = isMobile ? (mapWrapper?.clientWidth || window.innerWidth) : window.innerWidth;
+        const baseH = isMobile ? (mapWrapper?.clientHeight || window.innerHeight) : window.innerHeight;
+        
+        playerPixels = { x: baseW / 2, y: baseH * 0.6 };
+
         if (player) {
             player.style.left = `${playerPixels.x}px`;
             player.style.top = `${playerPixels.y}px`;
         }
+        
+        // Re-vincular joystick al iniciar por si acaso
+        const mobileBtns = document.querySelectorAll('.d-btn');
+        mobileBtns.forEach(btn => {
+            const key = btn.getAttribute('data-key');
+            if (!key) return;
+            const startMove = (e: Event) => {
+                e.preventDefault();
+                keys[key as keyof typeof keys] = true;
+                btn.classList.add('active');
+            };
+            const endMove = (e: Event) => {
+                e.preventDefault();
+                keys[key as keyof typeof keys] = false;
+                btn.classList.remove('active');
+            };
+            btn.addEventListener('pointerdown', startMove);
+            btn.addEventListener('pointerup', endMove);
+            btn.addEventListener('pointerleave', endMove);
+        });
+
         createLabels();
         fetchUserState();
         requestAnimationFrame(gameLoop);
@@ -400,6 +459,19 @@
     });
     
     document.addEventListener('skin-changed', () => fetchUserState());
+
+    // inicio camara
+    setTimeout(() => {
+        if (isMobileLayout()) updateCamera();
+    }, 150);
+
+    window.addEventListener('resize', () => {
+        if (isMobileLayout()) {
+            updateCamera();
+        } else {
+            if (mapWrapper) mapWrapper.style.transform = '';
+        }
+    });
 </script>
 
 <style define:vars={{ charactersPath: `url('${import.meta.env.BASE_URL}/characters.png')` }}>
@@ -428,6 +500,38 @@
         height: 100%;
         object-fit: cover;
         image-rendering: pixelated;
+    }
+
+    @media (max-width: 1023px) and (max-height: 869px) {
+        .game-container {
+            overflow: hidden;
+            display: block; 
+        }
+        .map-wrapper {
+            /* Mantenemos un aspect ratio natural para que no se estire */
+            width: 1600px; 
+            height: 900px; /* 16:9 aprox */
+            display: block;
+            transform-origin: top left;
+            scale: var(--map-scale);
+        }
+        .map-image {
+             width: 100%;
+             height: 100%;
+             object-fit: cover; /* cover para evitar estiramiento */
+        }
+    }
+    
+    /* Configuración para laptops y escritorio */
+    @media (min-width: 1024px) or (min-height: 870px) {
+        .mobile-controls {
+            display: none !important;
+        }
+        .map-wrapper {
+            width: 100vw !important;
+            height: 100vh !important;
+            transform: scale(var(--map-scale)) !important;
+        }
     }
 
     .player-container {
