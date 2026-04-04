@@ -267,6 +267,70 @@
 
     .btn-pixel:hover { background: #ff8787; }
 
+    /* Estilo para laptops (cerca del breakpoint) - MANTENER HORIZONTAL */
+    @media (max-width: 1250px) {
+        .brand h1 { font-size: 2rem; }
+        .about-me { padding: 20px 30px; }
+        .about-top { gap: 20px; }
+        .about-image { width: 180px; }
+        .about-me p { font-size: 0.75rem; }
+    }
+
+    /* Estilo para moviles - APILAR UNO ENCIMA DE OTRO */
+    @media (max-width: 1023px) and (max-height: 869px) {
+        .main-wrapper {
+            flex-direction: column;
+            gap: 20px;
+            height: auto;
+            padding: 40px 0;
+            overflow-y: auto;
+        }
+        .left-panel, .right-panel {
+            flex: none;
+            width: 100%;
+            align-items: center;
+            text-align: center;
+        }
+        .separator-chains {
+            display: none;
+        }
+        .brand h1 {
+            font-size: 1.8rem;
+        }
+        .subtitle {
+            font-size: 0.7rem;
+            margin-bottom: 20px;
+        }
+        .btn-pixel {
+            font-size: 0.9rem;
+            padding: 10px 20px;
+        }
+        .about-me {
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .about-top {
+            flex-direction: column;
+            gap: 15px;
+        }
+        .about-image {
+            width: 100%;
+            max-width: 180px;
+            margin: 0 auto;
+        }
+        .about-me h2 {
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        .about-me p {
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        .extra-info {
+            gap: 20px;
+            justify-content: center;
+        }
+    }
     @keyframes float {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-10px); }
