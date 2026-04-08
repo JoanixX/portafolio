@@ -1,8 +1,8 @@
-# 🚀 Frontend del Portafolio Interactivo (Astro)
+# Frontend del Portafolio Interactivo (Astro)
 
 Este es el frontend del portafolio, diseñado como una experiencia interactiva tipo videojuego 2D ("Game-like Portfolio"). Utiliza **Astro** para un rendimiento estático superior y **TypeScript/Vanilla CSS** para las animaciones e interactividad profunda.
 
-## 🛠 Tecnologías
+## Tecnologías
 
 - **Framework**: [Astro](https://astro.build/) (v4)
 - **Estilos**: CSS Puro (Vanilla) con un sistema de diseño basado en variables y animaciones nativas.
@@ -10,7 +10,7 @@ Este es el frontend del portafolio, diseñado como una experiencia interactiva t
 - **Fuentes**: Google Fonts "Outfit" para una estética premium.
 - **Interactividad**: `ViewTransitions` de Astro para navegaciones suaves sin refresco de página.
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```text
 src/
@@ -28,7 +28,7 @@ src/
 └── data/                  # Contenido de proyectos y configuración de niveles.
 ```
 
-## 🎮 Experiencia de Usuario
+## Experiencia de Usuario
 
 ### 1. Sistema de Inicio
 Al entrar, el usuario es recibido por una `StartScreen`. Se genera un ID único que permite al backend recordar su progreso (monedas y skins) incluso si cierra la pestaña.
@@ -43,7 +43,7 @@ El mapa se divide en biomas tecnológicos:
 - **Monedas**: Se ganan recolectándolas del mapa o ganando en los minijuegos.
 - **Skins**: El `Dashboard` incluye un acceso a la tienda donde puedes comprar diferentes aspectos para tu cursor/avatar, los cuales se guardan en el servidor.
 
-## 🚀 Ejecución
+## Ejecución
 
 Necesitas tener **Node.js** (v18+) instalado.
 

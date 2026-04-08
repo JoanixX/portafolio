@@ -1,8 +1,8 @@
-# 🦀 Backend del Portafolio Interactivo
+# Backend del Portafolio Interactivo
 
 Este es el servidor backend construido en **Rust** para manejar la lógica de gamificación, persistencia de usuarios y estadísticas en tiempo real del portafolio.
 
-## 🛠 Tecnologías
+## Tecnologías
 
 - **Lenguaje**: Rust (Edition 2021)
 - **Framework Web**: [Actix-web](https://actix.rs/) (v4) - Escogido por su extrema velocidad y robustez.
@@ -10,26 +10,26 @@ Este es el servidor backend construido en **Rust** para manejar la lógica de ga
 - **Serialización**: `serde` y `serde_json` para manejo de API JSON.
 - **Estado**: `std::sync::Mutex` y `HashMap` para manejo de estado concurrente en memoria.
 
-## 📡 API Endpoints
+## API Endpoints
 
 El backend expone una API REST en `http://127.0.0.1:8080`. Se utiliza el header `X-User-ID` para identificar sesiones únicas.
 
-### 📊 Estadísticas Globales
+### Estadísticas Globales
 - `GET /api/stats`: Obtiene visitas totales y monedas recolectadas globalmente.
 
-### 👤 Estado del Usuario
+### Estado del Usuario
 - `GET /api/user-state`: Recupera monedas, skins obtenidas y recompensas reclamadas del usuario.
 - `POST /api/visit`: Registra una visita y otorga un **Bono de Bienvenida** (cada 12 minutos).
 
-### 🪙 Gamificación y Recompensas
+### Gamificación y Recompensas
 - `POST /api/collect`: Incrementa monedas del usuario. Soporta `reward_id` para evitar doble reclamo de logros.
 - `POST /api/play-game`: Valida si el usuario tiene monedas suficientes para iniciar un minijuego y descuenta el costo.
 
-### 👕 Tienda de Skins
+### Tienda de Skins
 - `POST /api/buy-skin`: Compra una nueva skin usando monedas.
 - `POST /api/set-skin`: Cambia la skin activa del usuario.
 
-## 🚀 Ejecución
+## Ejecución
 
 Asegúrate de tener [Rust instalado](https://www.rust-lang.org/tools/install).
 
@@ -44,7 +44,7 @@ Asegúrate de tener [Rust instalado](https://www.rust-lang.org/tools/install).
 
 El servidor iniciará en el puerto **8080** (o el definido en la variable de entorno `PORT`).
 
-## 📝 Notas de Desarrollo
+## Notas de Desarrollo
 
 - **Estado Volátil**: Actualmente el estado se guarda en memoria (RAM). Se planea integrar SQLite para persistencia a largo plazo.
 - **Identificación**: El frontend genera un UUID persistente en el `localStorage` y lo envía en cada petición.
