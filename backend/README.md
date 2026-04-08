@@ -46,6 +46,10 @@ El servidor iniciará en el puerto **8080** (o el definido en la variable de ent
 
 ## Notas de Desarrollo
 
-- **Estado Volátil**: Actualmente el estado se guarda en memoria (RAM). Se planea integrar SQLite para persistencia a largo plazo.
+- **Estado en Memoria**: Actualmente se guarda en memoria (RAM) por **eficiencia de costes** y simplicidad de despliegue inicial.
 - **Identificación**: El frontend genera un UUID persistente en el `localStorage` y lo envía en cada petición.
 - **Seguridad**: CORS configurado para permitir cualquier origen durante el desarrollo.
+
+## Arquitectura Futura
+
+Se utilizó caché para esta demo por eficiencia de costes, pero el sistema está diseñado con **Inyección de Dependencias** para "swappear" el repositorio por **PostgreSQL/Redis** en 5 minutos. Esto garantiza que la lógica de negocio permanezca desacoplada de la implementación de la persistencia.
