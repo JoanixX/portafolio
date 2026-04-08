@@ -1,53 +1,51 @@
 # 🚀 Frontend del Portafolio Interactivo (Astro)
 
-Este es el frontend del portafolio, diseñado como una experiencia interactiva tipo videojuego 2D ("Game-like Portfolio"). Usa **Astro** para rendimiento estático y **Vanilla JS/CSS** para las animaciones e interactividad.
+Este es el frontend del portafolio, diseñado como una experiencia interactiva tipo videojuego 2D ("Game-like Portfolio"). Utiliza **Astro** para un rendimiento estático superior y **TypeScript/Vanilla CSS** para las animaciones e interactividad profunda.
 
 ## 🛠 Tecnologías
 
 - **Framework**: [Astro](https://astro.build/) (v4)
-- **Estilos**: CSS Puro (Vanilla) con variables CSS para temas y animaciones `keyframes`.
-- **Lenguaje**: TypeScript para lógica robusta en componentes client-side.
-- **Fuentes**: Google Fonts "Outfit" para una estética moderna y limpia.
+- **Estilos**: CSS Puro (Vanilla) con un sistema de diseño basado en variables y animaciones nativas.
+- **Lógica**: TypeScript para manejar el loop de los juegos y la comunicación con la API.
+- **Fuentes**: Google Fonts "Outfit" para una estética premium.
+- **Interactividad**: `ViewTransitions` de Astro para navegaciones suaves sin refresco de página.
 
 ## 📂 Estructura del Proyecto
 
 ```text
 src/
 ├── components/
-│   ├── Dashboard.astro    # HUD superior derecho. Muestra stats en tiempo real.
-│   ├── GameMap.astro      # El núcleo de la experiencia. Mapa 2D con zonas interactivas.
-│   └── ZoneModal.astro    # Ventana modal para mostrar detalles de proyectos.
-├── layouts/
-│   └── Layout.astro       # Estructura global HTML, Head y estilos base.
-└── pages/
-    └── index.astro        # Punto de entrada. Compone el Mapa y el Dashboard.
+│   ├── StartScreen.astro  # Pantalla de inicio con selector de nombre y carga.
+│   ├── Dashboard.astro    # HUD superior. Muestra monedas, visitas y selector de skins.
+│   ├── GameMap.astro      # Mapa principal con zonas interactivas y NPCs.
+│   └── ZoneModal.astro    # Modales dinámicos para proyectos y minijuegos.
+├── game/                  # Lógica de los minijuegos (FSM, Física, Renderizado)
+│   ├── fishing.ts         # Minijuego de pesca en la zona Backend.
+│   ├── farm.ts            # Minijuego de recolección en Magic Tree.
+│   ├── connect4.ts        # Juego de estrategia contra la IA.
+│   └── quiz.ts            # Quiz interactivo de conocimientos.
+├── layouts/               # Estructura global y estilos base.
+└── data/                  # Contenido de proyectos y configuración de niveles.
 ```
 
-## 🎮 Características Interactivas
+## 🎮 Experiencia de Usuario
 
-### 1. Mapa de Zonas ("The Map")
+### 1. Sistema de Inicio
+Al entrar, el usuario es recibido por una `StartScreen`. Se genera un ID único que permite al backend recordar su progreso (monedas y skins) incluso si cierra la pestaña.
 
-El portafolio se divide en 3 zonas principales orbitando un HUB central:
+### 2. Zonas y Minijuegos
+El mapa se divide en biomas tecnológicos:
+- **Backend Zone (Blue)**: Aquí puedes pescar proyectos reales.
+- **Magic Tree (Green)**: Una zona para relajarse y jugar el minijuego de la granja.
+- **Strategic Zone**: Tablero de Connect 4 y Quizzes.
 
-- **Backend Zone**: Proyectos de Rust, Node.js, APis.
-- **Data Science Zone**: Analytics, Dashboards.
-- **AI/ML Zone**: Modelos, Inferencia.
-
-Cada zona es interactiva (hover effects) y al hacer clic abre un modal detallado sin recargar la página.
-
-### 2. Sistema de Gamificación
-
-- **Monedas ($)**: Hay monedas flotando en el mapa. Al hacer clic en ellas, desaparecen con una animación y envían una petición al backend.
-- **Dashboard en Vivo**: El componente `Dashboard` consulta periódicamente al backend para actualizar el contador de monedas global y visitas.
-
-### 3. Diseño Visual
-
-- **Glassmorphism**: Paneles semitransparentes con `backdrop-filter`.
-- **Animaciones**: Rotación 3D simulada en el fondo (grid), flotación de monedas, transiciones suaves (ViewTransitions).
+### 3. Economía y Personalización
+- **Monedas**: Se ganan recolectándolas del mapa o ganando en los minijuegos.
+- **Skins**: El `Dashboard` incluye un acceso a la tienda donde puedes comprar diferentes aspectos para tu cursor/avatar, los cuales se guardan en el servidor.
 
 ## 🚀 Ejecución
 
-Necesitas tener **Node.js** instalado.
+Necesitas tener **Node.js** (v18+) instalado.
 
 1.  Instala dependencias:
     ```bash
@@ -60,4 +58,4 @@ Necesitas tener **Node.js** instalado.
 
 Visita `http://localhost:4321`.
 
-> **Nota**: Para que la interactividad funcione al 100% (contadores), asegúrate de que el **Backend (Rust)** esté corriendo en el puerto 8080.
+> **IMPORTANTE**: La experiencia completa (monedas, skins, visitas) requiere que el **Backend (Rust)** esté activo en el puerto 8080. El frontend intentará reconectarse automáticamente si el backend se cae.

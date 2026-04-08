@@ -1,57 +1,33 @@
 # 🦀 Backend del Portafolio Interactivo
 
-Este es el servidor backend construido en **Rust** para manejar la lógica de gamificación y estadísticas en tiempo real del portafolio.
+Este es el servidor backend construido en **Rust** para manejar la lógica de gamificación, persistencia de usuarios y estadísticas en tiempo real del portafolio.
 
 ## 🛠 Tecnologías
 
 - **Lenguaje**: Rust (Edition 2021)
 - **Framework Web**: [Actix-web](https://actix.rs/) (v4) - Escogido por su extrema velocidad y robustez.
-- **CORS**: `actix-cors` para permitir peticiones desde el frontend (Astro).
+- **CORS**: `actix-cors` para comunicación segura con el frontend.
 - **Serialización**: `serde` y `serde_json` para manejo de API JSON.
-- **Estado**: `std::sync::Mutex` para manejo de estado concurrente en memoria (simulando una DB).
+- **Estado**: `std::sync::Mutex` y `HashMap` para manejo de estado concurrente en memoria.
 
 ## 📡 API Endpoints
 
-El backend expone una API REST en `http://127.0.0.1:8080`.
+El backend expone una API REST en `http://127.0.0.1:8080`. Se utiliza el header `X-User-ID` para identificar sesiones únicas.
 
-### 1. Obtener Estadísticas
+### 📊 Estadísticas Globales
+- `GET /api/stats`: Obtiene visitas totales y monedas recolectadas globalmente.
 
-Devuelve el estado actual de visitas y monedas recolectadas globalmente.
+### 👤 Estado del Usuario
+- `GET /api/user-state`: Recupera monedas, skins obtenidas y recompensas reclamadas del usuario.
+- `POST /api/visit`: Registra una visita y otorga un **Bono de Bienvenida** (cada 12 minutos).
 
-- **Ruta**: `GET /api/stats`
-- **Respuesta**:
-  ```json
-  {
-    "visits": 12,
-    "total_coins": 50
-  }
-  ```
+### 🪙 Gamificación y Recompensas
+- `POST /api/collect`: Incrementa monedas del usuario. Soporta `reward_id` para evitar doble reclamo de logros.
+- `POST /api/play-game`: Valida si el usuario tiene monedas suficientes para iniciar un minijuego y descuenta el costo.
 
-### 2. Registrar Visita
-
-Incrementa el contador de visitas. Se llama automáticamente cuando el frontend carga.
-
-- **Ruta**: `POST /api/visit`
-- **Respuesta**:
-  ```json
-  {
-    "status": "visited",
-    "count": 13
-  }
-  ```
-
-### 3. Recolectar Moneda
-
-Acción de gamificación. Incrementa el contador de monedas cuando un usuario hace clic en una moneda en el mapa.
-
-- **Ruta**: `POST /api/collect`
-- **Respuesta**:
-  ```json
-  {
-    "status": "collected",
-    "total": 60
-  }
-  ```
+### 👕 Tienda de Skins
+- `POST /api/buy-skin`: Compra una nueva skin usando monedas.
+- `POST /api/set-skin`: Cambia la skin activa del usuario.
 
 ## 🚀 Ejecución
 
@@ -66,9 +42,10 @@ Asegúrate de tener [Rust instalado](https://www.rust-lang.org/tools/install).
     cargo run
     ```
 
-El servidor iniciará en el puerto **8080**.
+El servidor iniciará en el puerto **8080** (o el definido en la variable de entorno `PORT`).
 
 ## 📝 Notas de Desarrollo
 
-- **Estado Volátil**: Actualmente el estado se guarda en memoria (RAM). Si reinicias el servidor, los contadores vuelven a cero.
-- **Seguridad**: CORS está configurado para permitir `Any` origen por facilidad de desarrollo. Para producción, restringir al dominio del frontend.
+- **Estado Volátil**: Actualmente el estado se guarda en memoria (RAM). Se planea integrar SQLite para persistencia a largo plazo.
+- **Identificación**: El frontend genera un UUID persistente en el `localStorage` y lo envía en cada petición.
+- **Seguridad**: CORS configurado para permitir cualquier origen durante el desarrollo.
