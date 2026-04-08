@@ -1,10 +1,10 @@
-# 🎮 Cosmic Portfolio - Experiencia Interactiva
+# JoanixX (Cesar Joaquin Alvarado Osorio) - Portafolio
 
-Bienvenido a mi portafolio interactivo, un proyecto diseñado como una experiencia gamificada tipo videojuego 2D ("Game-like Portfolio"). Los usuarios pueden explorar diferentes zonas tecnológicas, recolectar monedas, jugar minijuegos y personalizar su avatar.
+Hola! Soy Joaquin Alvarado y este es mi portafolio, un proyecto diseñado como una experiencia gamificada tipo videojuego 2D ("Game-like Portfolio"). Los usuarios pueden explorar diferentes zonas tecnológicas, recolectar monedas, jugar minijuegos y personalizar su avatar.
 
 Este repositorio está dividido en dos partes principales: el **Frontend** (Astro) y el **Backend** (Rust).
 
-## 🚀 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```text
 portafolio/
@@ -12,7 +12,7 @@ portafolio/
 └── backend/      # Servidor en Rust con Actix-web para manejar el estado y la persistencia en memoria.
 ```
 
-## 🌌 Características Principales
+## Características Principales
 
 - **Exploración Espacial**: Un mapa interactivo con zonas dedicadas a Backend, Data Science y AI/ML.
 - **Sistema de Gamificación**: Recolecta monedas flotantes para ganar puntos.
@@ -24,7 +24,7 @@ portafolio/
 - **Personalización**: Tienda de skins para cambiar la apariencia del cursor/avatar usando las monedas recolectadas.
 - **Efectos Visuales Premium**: Glassmorphism, animaciones fluidas y un diseño responsivo que se adapta a cualquier dispositivo.
 
-## 🛠 Tecnologías Core
+## Tecnologías
 
 | Capa | Tecnologías |
 | :--- | :--- |
@@ -32,7 +32,7 @@ portafolio/
 | **Backend** | Rust, Actix-web, Serde, Actix-Cors |
 | **Diseño** | Google Fonts (Outfit), Glassmorphism, Retro Pixel Art |
 
-## 🛠 Cómo empezar
+## Cómo empezar
 
 ### 1. Clonar el repositorio
 ```bash
@@ -57,4 +57,4 @@ npm run dev
 
 ---
 
-Desarrollado con ❤️ por [Joaquín](https://github.com/JoanixX)
+Desarrollado por [Joaquin](https://github.com/JoanixX)
