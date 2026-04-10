@@ -9,6 +9,10 @@
                 <!-- descripcion -->
             </div>
 
+            <div id="featured-project" class="featured-project hidden">
+                <!-- featured project highlighted -->
+            </div>
+
             <div id="projects-list" class="projects-list">
                 <!-- lista de proyectos -->
             </div>
@@ -32,7 +36,7 @@
                     <p id="detail-tech">Rust, Actix, PostgreSQL</p>
                 </div>
                 <div class="detail-actions">
-                    <a href="#" id="detail-repo" class="btn secondary">GitHub Repo</a>
+                    <a href="#" id="detail-repo" class="btn secondary" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
                     <button id="detail-claim" class="btn reward">Reward (+25 coins)</button>
                 </div>
             </div>
@@ -96,6 +100,7 @@
     const titleEl = document.getElementById('modal-title');
     const bodyEl = document.getElementById('modal-body');
     const projectsList = document.getElementById('projects-list');
+    const featuredContainer = document.getElementById('featured-project');
     const actionContainer = document.getElementById('modal-actions');
     const rewardBtn = document.getElementById('claim-reward');
 
@@ -162,11 +167,37 @@
 
                 if (data.type === 'minigame') {
                     projectsList?.classList.add('hidden');
+                    featuredContainer?.classList.add('hidden');
                     minigameContainer?.classList.remove('hidden');
                     setupMinigame(data);
                 } else {
                     if (data.projects) {
-                        data.projects.forEach(p => {
+                        const featured = data.projects.find(p => p.featured);
+                        const others = data.projects.filter(p => !p.featured);
+
+                        if (featured && featuredContainer) {
+                            featuredContainer.innerHTML = `
+                                <div class="featured-card">
+                                    <div class="featured-badge">FEATURED PROJECT</div>
+                                    <img src="${featured.image}" alt="${featured.name}" class="featured-img" />
+                                    <div class="featured-info">
+                                        <h3 class="featured-name">${featured.name}</h3>
+                                        <p class="featured-sum">${featured.summary}</p>
+                                        <div class="featured-actions">
+                                            <button class="btn reward view-featured-btn" data-id="${featured.id}">VER PROYECTO</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            featuredContainer.querySelector('.view-featured-btn')?.addEventListener('click', () => {
+                                showDetails(featured);
+                            });
+                            featuredContainer.classList.remove('hidden');
+                        } else {
+                            featuredContainer?.classList.add('hidden');
+                        }
+
+                        others.forEach(p => {
                             const el = document.createElement('div');
                             el.className = 'project-row';
                             el.innerHTML = `<span class="p-name">${p.name}</span><span class="p-sum">${p.summary}</span>`;
